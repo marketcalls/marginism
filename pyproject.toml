@@ -20,7 +20,8 @@ dev = ["pytest>=7"]
 marginism = "marginism.cli:main"
 
 [project.urls]
-Documentation = "https://www.nseindia.com/products-services/span"
+Homepage = "https://github.com/marketcalls/marginism"
+Repository = "https://github.com/marketcalls/marginism"
 
 [tool.setuptools]
 packages = ["marginism"]
