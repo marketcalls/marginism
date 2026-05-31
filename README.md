@@ -80,17 +80,18 @@ Margin figures are estimates — always confirm with your broker before trading.
 Not financial advice. MIT licensed. Full API details in
 [`marginism/README.md`](marginism/README.md).
 
-The software is provided "as is", without warranty of any kind. The authors and
-contributors accept **no responsibility or liability for any errors or
-inaccuracies in the calculations, or for any trading losses, damages, or
-decisions** arising from its use. Margins depend on the SPAN file and exposure
-rates you supply, and may differ from your broker's. **Use at your own risk and
-verify every figure with your broker/exchange.**
+The software is provided "as is", without warranty of any kind. The author
+accepts **no responsibility or liability for any errors or inaccuracies in the
+calculations, or for any trading losses, damages, or decisions** arising from its
+use. Margins depend on the SPAN file and exposure rates you supply, may differ
+from your broker's, and must be independently verified before trading. **Use at
+your own risk.**
 
-This is an independent open-source project — **not affiliated with, endorsed by,
-or connected to any broker or exchange, and it uses no broker or product brand
-names anywhere**.
+This is an independent project built by an independent developer. It is **not
+affiliated with, sponsored by, endorsed by, or connected to** NSE, NSE Clearing
+(NSCCL), the Chicago Mercantile Exchange (CME), or any broker or exchange.
 
-SPAN® is a registered trademark of the Chicago Mercantile Exchange, used herein
-under License. The Chicago Mercantile Exchange assumes no liability in connection
-with the use of SPAN by any person or entity.
+SPAN® is a registered trademark of Chicago Mercantile Exchange Inc. All other
+trademarks are the property of their respective owners. Any names are used only
+for identification/descriptive purposes (nominative use) and do not imply any
+affiliation, endorsement, or license.
