@@ -25,7 +25,7 @@ class PositionResult:
 class MarginResult:
     """Full margin breakdown for a portfolio."""
 
-    span_margin: float = 0.0
+    marginism: float = 0.0
     exposure_margin: float = 0.0
     adhoc_margin: float = 0.0
     net_option_value: float = 0.0
@@ -39,13 +39,13 @@ class MarginResult:
 
         Premium for long options is collected separately, not part of margin.
         """
-        return self.span_margin + self.exposure_margin + self.adhoc_margin
+        return self.marginism + self.exposure_margin + self.adhoc_margin
 
     def summary(self) -> str:
         lines = [
             "SPAN Margin Summary",
             "=" * 52,
-            f"  SPAN margin      : {self.span_margin:>16,.2f}",
+            f"  SPAN margin      : {self.marginism:>16,.2f}",
             f"  Exposure margin  : {self.exposure_margin:>16,.2f}",
         ]
         if self.adhoc_margin:
@@ -186,7 +186,7 @@ class SpanCalculator:
             cmty = self.span_file.get(sym)
             cres = compute_commodity(cmty, resolved)
             result.by_commodity[sym] = cres
-            result.span_margin += cres.span_risk
+            result.marginism += cres.span_risk
             result.net_option_value += cres.net_option_value
 
         return result

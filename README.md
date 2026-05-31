@@ -9,7 +9,7 @@ margin benefit from hedging — the same figures a broker's margin calculator
 shows. Pure Python, **zero third-party dependencies**, no network calls.
 
 ```python
-from span_margin import RiskEngine
+from marginism import RiskEngine
 
 eng = RiskEngine.from_file("nsccl.20260529.s.spn")   # parse once, reuse
 
@@ -49,7 +49,7 @@ initial margin = SPAN margin + Exposure (ELM) margin + Adhoc
 All examples reuse one engine (parse once):
 
 ```python
-from span_margin import RiskEngine
+from marginism import RiskEngine
 eng = RiskEngine.from_file("nsccl.20260529.s.spn")   # NIFTY lot size = 65
 ```
 
@@ -166,7 +166,7 @@ eng.basket([
 
 ```bash
 pip install -e .          # from a clone
-# or drop the span_margin/ folder on your PYTHONPATH (stdlib only)
+# or drop the marginism/ folder on your PYTHONPATH (stdlib only)
 ```
 
 Requires Python 3.8+.
@@ -181,7 +181,7 @@ day. Point the engine at whichever revision you need; the latest end-of-day
 ## Documentation & examples
 
 - `example.py` — 10 worked trader strategies with margins and benefit.
-- `span_margin/README.md` — full API reference, file-path tips (macOS/Windows),
+- `marginism/README.md` — full API reference, file-path tips (macOS/Windows),
   and the SPAN algorithm details.
 
 ## Disclaimer

@@ -1,4 +1,4 @@
-"""span_margin — worked examples for traders.
+"""marginism — worked examples for traders.
 
 Run:  python example.py
 
@@ -12,7 +12,7 @@ quantity is entered DIRECTLY in units (NIFTY lot size = 65, so 65 = 1 lot,
 
 import os
 
-from span_margin import RiskEngine
+from marginism import RiskEngine
 
 # ----------------------------------------------------------------------
 # WHERE IS YOUR .spn FILE?  Pick one of these.

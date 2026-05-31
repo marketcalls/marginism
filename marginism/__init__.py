@@ -1,8 +1,8 @@
-"""span_margin — compute NSE/NSCCL SPAN margins from CME-SPAN ``.spn`` files.
+"""marginism — compute NSE/NSCCL SPAN margins from CME-SPAN ``.spn`` files.
 
 Quick start
 -----------
->>> from span_margin import SpanCalculator, Position
+>>> from marginism import SpanCalculator, Position
 >>> calc = SpanCalculator.from_file(
 ...     "nsccl.20260529.s/nsccl.20260529.s.spn", symbols=["NIFTY"])
 >>> res = calc.calculate([

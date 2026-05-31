@@ -1,4 +1,4 @@
-# span_margin
+# marginism
 
 Compute **NSE / NSCCL SPAN margins** directly from the exchange's daily
 CME-SPAN risk-parameter files (`.spn`, XML `fileFormat 4.00`), the same inputs a
@@ -43,7 +43,7 @@ configured in `ExposureConfig` and applied to futures and short options.
 
 ## Install / layout
 
-Pure standard library (Python 3.8+), no dependencies. Drop the `span_margin/`
+Pure standard library (Python 3.8+), no dependencies. Drop the `marginism/`
 folder on your path (or `pip install -e .`).
 
 ## Pointing to your `.spn` file
@@ -65,7 +65,7 @@ SPN = "C:/Users/you/Downloads/nsccl.20260529.s.spn"
 ## Quick start
 
 ```python
-from span_margin import SpanCalculator, Position
+from marginism import SpanCalculator, Position
 
 calc = SpanCalculator.from_file(
     SPN,
@@ -80,7 +80,7 @@ result = calc.calculate([
 ])
 
 print(result.summary())
-print(result.span_margin, result.exposure_margin, result.total_margin)
+print(result.marginism, result.exposure_margin, result.total_margin)
 ```
 
 ## Order-style API (single or multiple legs)
@@ -90,7 +90,7 @@ print(result.span_margin, result.exposure_margin, result.total_margin)
 computation — no network, no service.**
 
 ```python
-from span_margin import RiskEngine
+from marginism import RiskEngine
 
 eng = RiskEngine.from_file(SPN)
 
@@ -130,9 +130,9 @@ eng.basket([
 ## Command line
 
 ```bash
-python -m span_margin <file.spn> --list                 # all symbols
-python -m span_margin <file.spn> --info NIFTY            # contracts/expiries
-python -m span_margin <file.spn> \
+python -m marginism <file.spn> --list                 # all symbols
+python -m marginism <file.spn> --info NIFTY            # contracts/expiries
+python -m marginism <file.spn> \
     --pos NIFTY:FUT:-65:20260630 \
     --pos NIFTY:CE:65:20260630:24000                     # margin for positions
 ```
@@ -164,7 +164,7 @@ python -m span_margin <file.spn> \
 | `calculator.py` | `SpanCalculator` — load once, evaluate many portfolios    |
 | `symbols.py`    | tradingsymbol ⇄ SPAN contract resolution                  |
 | `api.py`        | `RiskEngine` — `basket()`/`orders()`, single or many legs |
-| `cli.py`        | `python -m span_margin`                                   |
+| `cli.py`        | `python -m marginism`                                   |
 
 100% standard library, runs fully offline — give it a `.spn` file and call a
 function.

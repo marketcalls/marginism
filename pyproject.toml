@@ -3,10 +3,10 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "span-margin"
+name = "marginism"
 version = "0.1.0"
 description = "NSE/NSCCL SPAN margin calculator from CME-SPAN .spn files, with an order-basket margins API"
-readme = "span_margin/README.md"
+readme = "marginism/README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
 authors = [{ name = "marginism" }]
@@ -17,13 +17,13 @@ dependencies = []   # pure standard library — no third-party deps, runs offlin
 dev = ["pytest>=7"]
 
 [project.scripts]
-span-margin = "span_margin.cli:main"
+marginism = "marginism.cli:main"
 
 [project.urls]
 Documentation = "https://www.nseindia.com/products-services/span"
 
 [tool.setuptools]
-packages = ["span_margin"]
+packages = ["marginism"]
 
 [tool.setuptools.package-data]
-span_margin = ["README.md"]
+marginism = ["README.md"]

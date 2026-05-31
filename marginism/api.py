@@ -2,7 +2,7 @@
 
 Anyone with a SPAN ``.spn`` file can compute margins offline:
 
-    from span_margin import RiskEngine
+    from marginism import RiskEngine
     eng = RiskEngine.from_file("nsccl.20260529.s.spn")
     result = eng.basket([
         {"tradingsymbol": "NIFTY26JUN23700CE", "transaction_type": "SELL",
@@ -131,7 +131,7 @@ class RiskEngine:
     @staticmethod
     def _split(result):
         """Map a MarginResult to (span, exposure, option_premium, additional)."""
-        span = result.span_margin
+        span = result.marginism
         exposure = result.exposure_margin
         additional = result.adhoc_margin
         # premium *payable* only for net-long options (a debit, not margin)

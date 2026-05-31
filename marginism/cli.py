@@ -1,18 +1,18 @@
-"""Command-line interface: ``python -m span_margin``.
+"""Command-line interface: ``python -m marginism``.
 
 Examples
 --------
 List symbols::
 
-    python -m span_margin nsccl.20260529.s/nsccl.20260529.s.spn --list
+    python -m marginism nsccl.20260529.s/nsccl.20260529.s.spn --list
 
 Show contracts for a symbol::
 
-    python -m span_margin <file.spn> --info NIFTY
+    python -m marginism <file.spn> --info NIFTY
 
 Compute margin for positions (symbol:instrument:qty:expiry[:strike])::
 
-    python -m span_margin <file.spn> \
+    python -m marginism <file.spn> \
         --pos NIFTY:FUT:-65:20260630 \
         --pos NIFTY:CE:65:20260630:24000
 """
@@ -39,7 +39,7 @@ def _parse_pos(spec: str) -> Position:
 
 def main(argv: List[str] = None) -> int:
     argv = argv if argv is not None else sys.argv[1:]
-    ap = argparse.ArgumentParser(prog="span_margin", description=__doc__)
+    ap = argparse.ArgumentParser(prog="marginism", description=__doc__)
     ap.add_argument("spn", help="path to the .spn SPAN file")
     ap.add_argument("--list", action="store_true", help="list combined commodities")
     ap.add_argument("--info", metavar="SYMBOL", help="show contracts for a symbol")
