@@ -63,8 +63,9 @@ covered call, calendar spread, iron condor, …).
 
 ## Getting the SPAN file
 
-Download the latest daily SPAN file from your exchange clearing house
-(NSE F&O: `nsccl.YYYYMMDD.s.spn`) and point the engine at it:
+Download the latest daily SPAN file from your exchange clearing house and point
+the engine at it. For NSE F&O (`nsccl.YYYYMMDD.s.spn`) see NSE Clearing's
+[NSCCL SPAN page](https://www.nseclearing.in/risk-management/equity-derivatives/nsccl-span).
 
 ```python
 eng = RiskEngine.from_file("nsccl.20260529.s.spn")             # same folder
@@ -78,3 +79,18 @@ Works for NFO, currency (CDS), and commodity (MCX) files.
 Margin figures are estimates — always confirm with your broker before trading.
 Not financial advice. MIT licensed. Full API details in
 [`marginism/README.md`](marginism/README.md).
+
+The software is provided "as is", without warranty of any kind. The authors and
+contributors accept **no responsibility or liability for any errors or
+inaccuracies in the calculations, or for any trading losses, damages, or
+decisions** arising from its use. Margins depend on the SPAN file and exposure
+rates you supply, and may differ from your broker's. **Use at your own risk and
+verify every figure with your broker/exchange.**
+
+This is an independent open-source project — **not affiliated with, endorsed by,
+or connected to any broker or exchange, and it uses no broker or product brand
+names anywhere**.
+
+SPAN® is a registered trademark of the Chicago Mercantile Exchange, used herein
+under License. The Chicago Mercantile Exchange assumes no liability in connection
+with the use of SPAN by any person or entity.

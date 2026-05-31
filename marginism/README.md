@@ -168,4 +168,25 @@ python -m marginism <file.spn> \
 
 100% standard library, runs fully offline — give it a `.spn` file and call a
 function.
-```
+
+## Reference
+
+- NSE Clearing — NSCCL SPAN:
+  https://www.nseclearing.in/risk-management/equity-derivatives/nsccl-span
+
+## Disclaimer
+
+The software is provided "as is", without warranty of any kind. The authors and
+contributors accept **no responsibility or liability for any errors or
+inaccuracies in the calculations, or for any trading losses, damages, or
+decisions** arising from its use. Margins depend on the SPAN file and exposure
+rates you supply, may differ from your broker's, and must be independently
+verified before trading. Not financial advice; use at your own risk.
+
+This is an independent open-source project. It is **not affiliated with,
+endorsed by, or connected to any broker or exchange, and uses no broker or
+product brand names anywhere**.
+
+SPAN® is a registered trademark of the Chicago Mercantile Exchange, used herein
+under License. The Chicago Mercantile Exchange assumes no liability in connection
+with the use of SPAN by any person or entity.
