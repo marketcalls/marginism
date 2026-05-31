@@ -1,5 +1,9 @@
 # marginism
 
+[![PyPI](https://img.shields.io/pypi/v/marginism.svg)](https://pypi.org/project/marginism/)
+[![Python](https://img.shields.io/pypi/pyversions/marginism.svg)](https://pypi.org/project/marginism/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **SPAN margin calculator for Indian F&O — computed locally, offline, from the
 exchange's daily SPAN parameter file.**
 
@@ -165,11 +169,17 @@ eng.basket([
 ## Install
 
 ```bash
-pip install -e .          # from a clone
-# or drop the marginism/ folder on your PYTHONPATH (stdlib only)
+pip install marginism
 ```
 
-Requires Python 3.8+.
+Or from source (clone this repo):
+
+```bash
+pip install -e .
+# or just drop the marginism/ folder on your PYTHONPATH
+```
+
+Requires Python 3.8+. Pure standard library — **no third-party dependencies**.
 
 ## Getting a SPAN file
 
