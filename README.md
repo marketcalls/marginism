@@ -59,6 +59,37 @@ eng = RiskEngine.from_file("nsccl.20260529.s.spn")   # NIFTY lot size = 65
 (the margin saved by hedging vs holding each leg outright). Numbers below are
 from the 29-May-2026 settlement file.
 
+### Two ways to specify a leg
+
+Not every trader uses the same tradingsymbol format. So a leg can be given
+**either** by tradingsymbol **or** by separate fields — both are accepted in the
+same basket, and produce identical results.
+
+**A) By tradingsymbol** (two formats both resolve automatically):
+
+```python
+{"tradingsymbol": "NIFTY26JUN23700CE", "transaction_type": "SELL", "quantity": 65}   # compact
+{"tradingsymbol": "NIFTY30JUN2623700CE", "transaction_type": "SELL", "quantity": 65} # full-date
+```
+
+**B) By separate fields** — `symbol`, `expiry`, `strike`, `instrument` (`FUT`/`CE`/`PE`):
+
+```python
+{"symbol": "NIFTY", "instrument": "CE", "expiry": "2026-06-30", "strike": 23700,
+ "transaction_type": "SELL", "quantity": 65}
+```
+
+`expiry` accepts `2026-06-30`, `20260630`, or `30-06-2026` — all equivalent.
+For a future, drop `strike` and use `"instrument": "FUT"`. Example output:
+
+```
+  NIFTY 2026-06-30 23700 CE    span=141,673   exp=30,612   prem=0
+  SPAN=141,673   Exposure=30,612   TOTAL=172,285
+```
+
+The examples below use tradingsymbols, but you can swap any leg for the
+field-based form.
+
 ### Single-leg
 
 **Long 1 lot NIFTY future**
