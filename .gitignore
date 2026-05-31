@@ -1,0 +1,49 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+pip-wheel-metadata/
+
+# ---- Virtual environments ----
+.venv/
+venv/
+env/
+ENV/
+
+# ---- Test / coverage / type caches ----
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# ---- Editors / OS ----
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
+
+# ---- SPAN data files (large; not distributed with the package) ----
+# Ship the library, not exchange data. Remove these lines if you intend to
+# commit sample data for tests.
+*.spn
+*.zip
+nsccl.*/
+NSE LotSize.csv
+
+# ---- Internal / reference notes (not part of the public package) ----
+SPAN_MARGIN_LEARNINGS.md
+symbol.md

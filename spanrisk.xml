@@ -1,0 +1,3286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Edited with XMLSpy v2012 sp1 (x64) (http://www.altova.com) by Brady Houseknecht (CME) -->
+<!--Revision History:
+	04/21/06
+		- In 'nReq' and 'iaReq', changed elements below ‘som’ from required to optional
+	05/10/06
+		- Changed 'CustPortUseLov' element from boolean to nonNegativeInteger type w/ values restricted to 0, 1, or 2
+		- Set 'anov', 'exLOV', and 'spanReq' elements  to be of double type
+	05/26/06
+		- In 'portfolio' element, added optional 'concApplies' of 'boolean' type
+		- In 'ccPort' element, added optional 'concScaleUp' element after 'cc' element
+	06/02/06
+		- Added two new optional elements 'sumCCReq' and 'sumCCExLOV' to 'grOReq' and 'grCurReq' after 'exLOV'
+	03/09/2007
+		- In 'scanRate' element, added optional 'quoteInOptTerms' element after 'volScanPct' element.
+		- Added new optional 'crossSavings' element to oReq, curReq, grOReq, grCurReq elements
+		- Added new optional 'spotChargeAdj' element to 'ccPort' element
+		- Add new optional 'linkedAccts' element to 'portfolio' element 
+	03/15/2007
+		- In 'clearingOrg', added optional element 'minIntExDeltaPct'
+		- In 'priceScanDef', added optional element 'defType'
+		- In 'undC', added two optional elements 'legPriceFlag' and 'legPrice'
+	01/13/2010
+		- In 'definitions', added new optional element 'groupDef' after 'groupTypeDef'
+		- In 'clearingOrg', added new optional element 'cdsMarginParams' immediately after 'pointDef'
+		- In 'exchange', added new optional elements 'fwdPf', 'IRSwapPf', CDSwapPf
+		- Added new optional element 'eqPosFactor'
+		- Added 'sSpread' element to 'superSpreads'
+		- Added the following optional elements to 'ccDef':
+			- 'isCDSScanRisk' 
+			- 'cdsRate'
+			- 'intrRate'
+	03/05/2010
+		- Added new optional element 'sPointDef' element to 'sSpread'
+	01/26/2012
+		- Added new optional element 'hfactor' to 'curConv' 
+		- Added new optional element 'calDef' to 'definitions'
+		- In 'clearingOrg', added new optional element 'zeroCurve' after 'pointDef'
+		- Added new element 'hvarMarginParams', which includes 'hvarSet' and 'fxHvarSet' elements, after 'zeroCurve', 
+		- Added optional element 'type' to 'undC'
+		- In 'fwd', added new optional element 'discFactor' after 'cvf' 
+		- Added new optional elements 'priceScanDown'/'priceScanDownPct'/'volScanDown'/'volScanDownPct' to 'scanRate'
+		- Added new optional element 'isVariableTick' to 'OptionPF' after 'cvf'
+		- Added optional elements 'cvf' and 'svf' to 'opt' after 'v'
+		- Updated 'cdsMarginParams' element structure
+		- Added new element 'sectorDef' to 'cdsMarginParams'
+		- Added 'sector', 'bidAskSprd'. and 'pv01' elements to 'CDSwapPf'
+		- Updated 'cdsRate' element structure
+		- In 'pfLink', added new optional element 'arrayPrecision' after 'cmbMeth'
+		- In 'ccDef',
+			- Added new element 'marginMeth' after 'cmbMeth'
+			- Added new optional element 'hvarSetId' and 'fxHvarSetId' collections after 'marginMeth'
+			- Added new optional element 'concAdjRate' collection after 'adjRate'
+		- In 'sSpread', added two optional elements 'applyFxRisk' and 'apportionRisk'
+		- Added new optional element 'concScaleUp' to 'ccPort'
+		- Updated 'grCurReq'
+	01/31/2012
+		- Added new element 'IRSwap' 
+		- Added new element 'sp' (IRS position) 
+	02/13/2013
+        - In 'cdsMarginParams' added the following elements 
+			- 'cdsDeviationPct'   - double
+			- 'cdsSDV01Weight'  - double  
+			- 'cdsRDV01Weight'   - double  
+			- 'cdsDV01Exponent' - double  
+			- 'cdsIGOTRBidAskCap'  - double  
+			- 'cdsHYOTRBidAskCap'  - double  
+    10/22/2013
+        - In 'hvarSet' node added the following elements
+            - Added 'UseRollNum' element.  
+            - Added new optional elements 'hVal', 'hLogRet'  and 'hRet' 
+            - In the ‘seed’ element
+                - Added ‘offset’ element
+                - Added optional ‘tm’ element
+        - In ‘IRSwapPf’
+            - Added optional element ‘ZeroCurveId’
+	07/17/2014 RJH
+		- Added new element 'volRate'
+		- Added new element 'spreadType'
+		- These were added to 'dSpread'
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="a" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Risk array value</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="aType" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Alias type</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="aVal" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Alias value</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="accruedIntr" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Accrued interest</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="acctId" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Account identifier ("number") for a portfolio</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="acctSubType">
+		<xs:annotation>
+			<xs:documentation>Account type - for example, member, hedger or spec, for a portfolio</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="acctSubTypeCode"/>
+				<xs:element ref="value"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="acctSubTypeCode" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Account subtype code</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="acctSubTypeDef">
+		<xs:annotation>
+			<xs:documentation>Account subtype definitions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="acctSubTypeCode"/>
+				<xs:element ref="dataType"/>
+				<xs:element ref="description"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="acctType" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Account type code</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="acctTypeDef">
+		<xs:annotation>
+			<xs:documentation>Account type definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="isCust"/>
+				<xs:element ref="acctType"/>
+				<xs:element ref="name" minOccurs="0"/>
+				<xs:element ref="isNetMargin"/>
+				<xs:element ref="priority"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="addlReq" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Additional requirement -- The difference between the SPAN requirement for this performance bond class and initial or maintenance designation, and the SPAN requirement for the performance bond class with immediately lower priority, and the same initial or maintenance designation.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="adjRate">
+		<xs:annotation>
+			<xs:documentation>The risk adjustment factor element is designed to provide a completely parameterized way of calculating requirements for some rate classes based on requirements for other rate classes.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="baseR"/>
+				<xs:element ref="val"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="concAdjRate">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="val"/>
+				<xs:element name="loMarg" type="xs:double" minOccurs="0"/>
+				<xs:element name="hiMarg" type="xs:double" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="alias">
+		<xs:annotation>
+			<xs:documentation>The alias is a particular value for referring to the product family or contract. Each product family and each contract may have one or more 'alias' elements, which comes immediately after the domain.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="aType"/>
+				<xs:element ref="aVal"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="aliasDesc" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Alias Description</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="anov" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Available net option value</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="aot">
+		<xs:annotation>
+			<xs:documentation>Specific as-of trade</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="date"/>
+				<xs:element ref="net"/>
+				<xs:element ref="p" minOccurs="0"/>
+				<xs:element ref="dva" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="aots">
+		<xs:annotation>
+			<xs:documentation>Container for as-of trades</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="aot" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ap" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Accumulated price (premium) on premium-style nonoptions (such as stock and other physicals)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="applyBasisRisk" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Apply basis risk flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="as" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Active Scenario - for a scanning tier, the scenario number which gave rise to the scan risk.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="asomtr">
+		<xs:annotation>
+			<xs:documentation>Across-Position-Types Short Option Minimum Tier Requirement -- for a gross-margined clearing firm portfolio, the short option minimum tier requirement where short option positions are aggregated across tier types.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tn"/>
+				<xs:element ref="som"/>
+				<xs:element ref="sco"/>
+				<xs:element ref="spo"/>
+				<xs:element ref="sno"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="awayLeg">
+		<xs:annotation>
+			<xs:documentation>Inter clearing organization away spread leg.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ec"/>
+				<xs:element ref="cc"/>
+				<xs:element ref="tn"/>
+				<xs:element ref="rs"/>
+				<xs:element ref="i"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="baseR" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Base rate ID. It identifies the requirement on which the requirement being calculated will be based.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="basis" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Basis risk component of intra commodity spread charge</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="basisRates">
+		<xs:annotation>
+			<xs:documentation>The 'basisRates' element is the collection of rates used to calculate the basis risk charge, which captures the risk associated with imperfect correlations between cash and futures interest rate products -- the basis risk.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="rate" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="bfC">
+		<xs:annotation>
+			<xs:documentation>Business Function contract</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cId"/>
+				<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="bfPfLink">
+		<xs:annotation>
+			<xs:documentation>Business Function product family linkage -- specifies particular products at that exchange which are eligible for the business function.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="pfId"/>
+				<xs:element ref="pfCode" minOccurs="0"/>
+				<xs:element ref="pfType" minOccurs="0"/>
+				<xs:element ref="pfAlias" minOccurs="0"/>
+				<xs:choice>
+					<xs:element ref="bfSeries" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="bfC" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="bfSeries">
+		<xs:annotation>
+			<xs:documentation>Business Function series</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="pe"/>
+				<xs:element ref="undC"/>
+				<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="bfC" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="brk" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Break period definition.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="btNum" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>Beginning tier number</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="btn" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Break tier number -- number of the tier within the break.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="busFuncCoLink">
+		<xs:annotation>
+			<xs:documentation>Business Function clearing organization linkage. Contains at least one business function exchange linkage, which specifies a particular exchange cleared by that clearing org whose products participate in this business function.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ec"/>
+				<xs:element ref="coAlias" minOccurs="0"/>
+				<xs:element ref="busFuncExchLink" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="busFuncExchLink">
+		<xs:annotation>
+			<xs:documentation>Business Function exchange linkage. Contains at least one business function product family linkage, which specifies particular products at that exchange which are eligible for the business function.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="exch"/>
+				<xs:element ref="exchAlias" minOccurs="0"/>
+				<xs:element ref="bfPfLink" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="busFuncType" type="BusFuncType">
+		<xs:annotation>
+			<xs:documentation>Business function type.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="businessFunction">
+		<xs:annotation>
+			<xs:documentation>Business Function is something for which it is desired to define SPAN parameters independently from the "normal clearing" set.  For example, a cross-margin agreement between two or more clearing organizations is a business function, as is a mutual-offset agreement between two or more clearing organizations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="busFuncType"/>
+				<xs:element ref="ec"/>
+				<xs:element ref="name"/>
+				<xs:element ref="isContractScale" minOccurs="0"/>
+				<xs:element ref="isNetMargin" minOccurs="0"/>
+				<xs:element ref="finalizeMeth"/>
+				<xs:element ref="oopDeltaMeth" minOccurs="0"/>
+				<xs:element ref="capAnov" minOccurs="0"/>
+				<xs:element ref="lookAheadYears" minOccurs="0"/>
+				<xs:element ref="lookAheadDays" minOccurs="0"/>
+				<xs:element ref="daysPerYear" minOccurs="0"/>
+				<xs:element ref="custUseLov" minOccurs="0"/>
+				<xs:element ref="useLovPct" minOccurs="0"/>
+				<xs:element ref="limitSubAccountOffset" minOccurs="0"/>
+				<xs:element ref="capRiskArray" minOccurs="0"/>
+				<xs:element ref="curConv" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="pbRateDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="pointDef" maxOccurs="unbounded"/>
+				<xs:element ref="busFuncCoLink" maxOccurs="unbounded"/>
+				<xs:element ref="ccDef" maxOccurs="unbounded"/>
+				<xs:element ref="superSpreads" minOccurs="0"/>
+				<xs:element ref="superInterClearSpreads" minOccurs="0"/>
+				<xs:element ref="interSpreads" minOccurs="0"/>
+				<xs:element ref="interClearSpreads" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cId" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>Contract ID number</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cab" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Standard cabinet option value</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cabDesc" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>"Cabinet" description, eg:  "2.5 points = .00025 = $6.25"</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="capAnov" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Cap available net option value flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="capRiskArray" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Cap Risk Array flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cc" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Combined commodity code</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ccDef">
+		<xs:annotation>
+			<xs:documentation>Combined commodity definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cc"/>
+				<xs:element ref="concScaleUp" minOccurs="0"/>
+				<xs:element ref="name" minOccurs="0"/>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="currency"/>
+				<xs:element ref="riskExponent" minOccurs="0"/>
+				<xs:element ref="contractSize" minOccurs="0"/>
+				<xs:element ref="uomQty" minOccurs="0"/>
+				<xs:element ref="uom" minOccurs="0"/>
+				<xs:element ref="capAnov" minOccurs="0"/>
+				<xs:element ref="procMeth" minOccurs="0"/>
+				<xs:element ref="wfprMeth" minOccurs="0"/>
+				<xs:element ref="spotMeth" minOccurs="0"/>
+				<xs:element ref="somMeth" minOccurs="0"/>
+				<xs:element ref="cmbMeth" minOccurs="0"/>
+				<xs:element name="marginMeth" type="xs:string" minOccurs="0"/>
+				<xs:element name="hvarSetId" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="fxHvarSetId" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="custUseLov" minOccurs="0"/>
+				<xs:element ref="useLovPct" minOccurs="0"/>
+				<xs:element name="vmClass" type="xs:string" minOccurs="0"/>
+				<xs:element name="isCDSScanRisk" type="xs:boolean" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Flag to indicate CSD-type BFCC</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="limitSubAccountOffset" minOccurs="0"/>
+				<xs:element ref="binaryArrays" minOccurs="0"/>
+				<xs:element ref="limitArraysTo16Points" minOccurs="0"/>
+				<xs:element ref="pointDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="pfLink" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="adjRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="concAdjRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="scanTiers"/>
+					<xs:element ref="intraTiers"/>
+					<xs:element ref="interTiers"/>
+					<xs:element ref="rateTiers"/>
+					<xs:element ref="somTiers"/>
+				</xs:choice>
+				<xs:element ref="dSpread" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="spotRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="liqRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="basisRates" minOccurs="0"/>
+				<xs:element ref="vmRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="cdsRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="intrRate" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ccPort">
+		<xs:annotation>
+			<xs:documentation>Combined Commodity Portfolio - a combined commodity represented in a portfolio</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cc"/>
+				<xs:element ref="r" minOccurs="0"/>
+				<xs:element ref="concScaleUp" minOccurs="0"/>
+				<xs:element ref="currency" minOccurs="0"/>
+				<xs:element ref="spotChargeAdj" minOccurs="0"/>
+				<xs:element ref="pss" minOccurs="0"/>
+				<xs:element ref="lfv" minOccurs="0"/>
+				<xs:element ref="sfv" minOccurs="0"/>
+				<xs:element ref="lov" minOccurs="0"/>
+				<xs:element ref="sov" minOccurs="0"/>
+				<xs:element ref="lovf" minOccurs="0"/>
+				<xs:element ref="sovf" minOccurs="0"/>
+				<xs:element ref="lpv" minOccurs="0"/>
+				<xs:element ref="spv" minOccurs="0"/>
+				<xs:element ref="sv" minOccurs="0"/>
+				<xs:element ref="svt" minOccurs="0"/>
+				<xs:element ref="svp" minOccurs="0"/>
+				<xs:element ref="svpt" minOccurs="0"/>
+				<xs:element ref="op" minOccurs="0"/>
+				<xs:element ref="ap" minOccurs="0"/>
+				<xs:element ref="dva" minOccurs="0"/>
+				<xs:element ref="ote" minOccurs="0"/>
+				<xs:element ref="lue" minOccurs="0"/>
+				<xs:element ref="pl" minOccurs="0"/>
+				<xs:element ref="otep" minOccurs="0"/>
+				<xs:element ref="plp" minOccurs="0"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="nReq"/>
+					<xs:element ref="gReq"/>
+					<xs:element ref="dReq"/>
+				</xs:choice>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="np" type="NetPosition"/>
+					<xs:element name="ncp" type="NetClearingPosition"/>
+					<xs:element name="gp" type="GrossPosition"/>
+					<xs:element name="gcp" type="GrossClearingPosition"/>
+					<xs:element name="edp" type="EquivalentDebtPosition"/>
+					<xs:element name="asset" type="Asset"/>
+					<xs:element name="sp" type="SP"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="chargeMeth" type="ChargeMeth">
+		<xs:annotation>
+			<xs:documentation>Charge calculation method, which specifies how the charge or credit for the spread definition should be calculated</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="spreadType" type="SpreadType">
+		<xs:annotation>
+			<xs:documentation>Indicates types of offsets used in this spread.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="clearSpread">
+		<xs:annotation>
+			<xs:documentation>Inter clearing organization (exchange complex) spread definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="spread"/>
+				<xs:element ref="homeLeg" maxOccurs="unbounded"/>
+				<xs:element ref="awayLeg" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="clearingOrg">
+		<xs:annotation>
+			<xs:documentation>Clearing Organization</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ec"/>
+				<xs:element ref="name"/>
+				<xs:element ref="isContractScale" minOccurs="0"/>
+				<xs:element ref="isNetMargin" minOccurs="0"/>
+				<xs:element ref="finalizeMeth"/>
+				<xs:element ref="oopDeltaMeth" minOccurs="0"/>
+				<xs:element ref="capAnov" minOccurs="0"/>
+				<xs:element name="minIntExDeltaPct" type="xs:double" minOccurs="0"/>
+				<xs:element ref="lookAheadYears" minOccurs="0"/>
+				<xs:element ref="lookAheadDays" minOccurs="0"/>
+				<xs:element ref="daysPerYear" minOccurs="0"/>
+				<xs:element ref="custUseLov" minOccurs="0"/>
+				<xs:element ref="useLovPct" minOccurs="0"/>
+				<xs:element ref="limitSubAccountOffset" minOccurs="0"/>
+				<xs:element ref="capRiskArray" minOccurs="0"/>
+				<xs:element ref="curConv" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="pbRateDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="pointDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="zeroCurve" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="hvarMarginParams" minOccurs="0"/>
+				<xs:element ref="cdsMarginParams" minOccurs="0"/>
+				<xs:element ref="exchange" maxOccurs="unbounded"/>
+				<xs:element ref="ccDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="superSpreads" minOccurs="0"/>
+				<xs:element ref="superInterClearSpreads" minOccurs="0"/>
+				<xs:element ref="interSpreads" minOccurs="0"/>
+				<xs:element ref="interClearSpreads" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cmbMeth" type="CmbMeth">
+		<xs:annotation>
+			<xs:documentation>Combination margining method</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cmbType" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Combination type</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="coAlias" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Clearing organization acronym alias</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="contractSize" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Standard contract size</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="country" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Issuing country code. Applicable only to debt securities.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cpnFreq" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Coupon frequency</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cpnLastDate" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Coupon last date</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cpnNextDate" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Coupon next date</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cpnRate" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Coupon rate</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="created" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>SPAN file creation date and time</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ctid" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>ID of clearable transaction creating this open trade</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="curConv">
+		<xs:annotation>
+			<xs:documentation>Currency conversion rate</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="fromCur"/>
+				<xs:element ref="toCur"/>
+				<xs:element ref="factor"/>
+				<xs:element ref="hfactor" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="hfactor">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="date"/>
+				<xs:element name="rate" type="xs:double"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="curReq">
+		<xs:annotation>
+			<xs:documentation>Currency Requirement - a breakout of the total performance bond requirement at some aggregate level in the portfolio -- either the group, the exchange complex, or the overall portfolio -- and for a particular performance bond rate (class and initial or maintenance designation) of the overall requirement in which it is contained, by performance bond currency represented in the portfolio.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="currency"/>
+				<xs:element ref="spanReq"/>
+				<xs:element ref="addlReq" minOccurs="0"/>
+				<xs:element ref="crossSavings" minOccurs="0"/>
+				<xs:element ref="anov"/>
+				<xs:element ref="curReq" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="curVal">
+		<xs:annotation>
+			<xs:documentation>Currency Value -- the long and short options and futures values for the products settled (denominated) in a particular currency, for all or for part of a portfolio.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="currency"/>
+				<xs:element ref="lfv" minOccurs="0"/>
+				<xs:element ref="sfv" minOccurs="0"/>
+				<xs:element ref="lov" minOccurs="0"/>
+				<xs:element ref="sov" minOccurs="0"/>
+				<xs:element ref="lovf" minOccurs="0"/>
+				<xs:element ref="sovf" minOccurs="0"/>
+				<xs:element ref="lpv" minOccurs="0"/>
+				<xs:element ref="spv" minOccurs="0"/>
+				<xs:element ref="sv" minOccurs="0"/>
+				<xs:element ref="svt" minOccurs="0"/>
+				<xs:element ref="svp" minOccurs="0"/>
+				<xs:element ref="svpt" minOccurs="0"/>
+				<xs:element ref="op" minOccurs="0"/>
+				<xs:element ref="ap" minOccurs="0"/>
+				<xs:element ref="dva" minOccurs="0"/>
+				<xs:element ref="ote" minOccurs="0"/>
+				<xs:element ref="lue" minOccurs="0"/>
+				<xs:element ref="pl" minOccurs="0"/>
+				<xs:element ref="otep" minOccurs="0"/>
+				<xs:element ref="plp" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="currency" type="IsoCurrencyCode">
+		<xs:annotation>
+			<xs:documentation>3-byte ISO code for the currency</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="currencyDef">
+		<xs:annotation>
+			<xs:documentation>Currency Definition elements identify the currencies used within the file</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="currency"/>
+				<xs:element ref="symbol"/>
+				<xs:element ref="name"/>
+				<xs:element ref="decimalPos"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cusip" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>CUSIP instrument ID</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="custUseLov" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Use LOV to offset risk in CUST segregation clearing level accounts flag. Default is 1 (True). </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cvf" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Standard contract value factor</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="eqPosFactor" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Equivalent position factor</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="notionAmt" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Notion amount</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="d" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Contract delta</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="sprCharge" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Spread Charge Rate for Credit Controls</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="dReq">
+		<xs:annotation>
+			<xs:documentation>Derived Requirement - a requirement derived from another one via a scaling process -- for example, an initial requirement derived from a maintenance requiremen</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="isM"/>
+				<xs:element ref="pbc"/>
+				<xs:element ref="spanReq"/>
+				<xs:element ref="addlReq" minOccurs="0"/>
+				<xs:element ref="anov"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dSpread">
+		<xs:annotation>
+			<xs:documentation>Delta spread definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="spread"/>
+				<xs:element ref="spreadType" minOccurs="0"/>
+				<xs:element ref="chargeMeth"/>
+				<xs:choice>
+					<xs:element ref="rate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="pmpsRate" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="tLeg"/>
+					<xs:element ref="pLeg"/>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="rpLeg"/>
+					</xs:choice>
+				</xs:choice>
+				<xs:element ref="volRate" minOccurs="0"/>
+				<xs:element ref="dSpread" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataType" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Data type</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="date" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Business date</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="daysPerYear" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>Lookahead number of days per year</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="decimalPos" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>Number of decimal positions</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="definitions">
+		<xs:annotation>
+			<xs:documentation>Container for currency, account type, venue, tick type, fee type, group type, and other definitions</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="currencyDef" maxOccurs="unbounded"/>
+				<xs:element ref="acctTypeDef" maxOccurs="unbounded"/>
+				<xs:element ref="acctSubTypeDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="venueDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="tickTypeDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="feeTypeDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="groupTypeDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="calDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="groupDef" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="deltaPointDef">
+		<xs:annotation>
+			<xs:documentation>Definition of a specific delta point pertaining to a particular rate ID</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="point"/>
+				<xs:element ref="priceScanDef"/>
+				<xs:element ref="volScanDef"/>
+				<xs:element ref="weight"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sPointDef">
+		<xs:annotation>
+			<xs:documentation>Per-point scanning based spread definition. 'aggMeth' - SUM or MAX (0 or 1 with 0 being default); 'sRate' - spread rate (only required for SUM); 'nMaxLoss' – number of maximum losses to add (only required for MAX)</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="point"/>
+				<xs:element name="aggMeth" type="xs:int" minOccurs="0"/>
+				<xs:element name="sRate" type="xs:double" minOccurs="0"/>
+				<xs:element name="nMaxLoss" type="xs:int" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="denominator" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Denominator</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="desc" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Description</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="description" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Description</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="div">
+		<xs:annotation>
+			<xs:documentation>Expected future payment</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="val"/>
+				<xs:choice>
+					<xs:choice>
+						<xs:element ref="dtm"/>
+						<xs:element ref="setlDate"/>
+					</xs:choice>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="divRate">
+		<xs:annotation>
+			<xs:documentation>Dividend yield information</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="val"/>
+				<xs:element ref="div" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="domain" type="xs:string"/>
+	<xs:element name="dr" type="xs:string"/>
+	<xs:element name="dro" type="xs:string"/>
+	<xs:element name="drs" type="xs:string"/>
+	<xs:element name="dtm" type="xs:string"/>
+	<xs:element name="duration" type="xs:string"/>
+	<xs:element name="dv" type="xs:string"/>
+	<xs:element name="dva" type="xs:string"/>
+	<xs:element name="dvad">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="date"/>
+				<xs:element ref="dv"/>
+				<xs:element ref="dvcum" minOccurs="0"/>
+				<xs:element ref="dvs" minOccurs="0"/>
+				<xs:element ref="dvcs" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dvas">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="dvad" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dvcs" type="xs:string"/>
+	<xs:element name="dvcum" type="xs:string"/>
+	<xs:element name="dvs" type="xs:string"/>
+	<xs:element name="ePe" type="xs:string"/>
+	<xs:element name="ec" type="xs:string"/>
+	<xs:element name="ecPort">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ec"/>
+				<xs:element ref="lfv" minOccurs="0"/>
+				<xs:element ref="sfv" minOccurs="0"/>
+				<xs:element ref="lov" minOccurs="0"/>
+				<xs:element ref="sov" minOccurs="0"/>
+				<xs:element ref="lovf" minOccurs="0"/>
+				<xs:element ref="sovf" minOccurs="0"/>
+				<xs:element ref="lpv" minOccurs="0"/>
+				<xs:element ref="spv" minOccurs="0"/>
+				<xs:element ref="sv" minOccurs="0"/>
+				<xs:element ref="svt" minOccurs="0"/>
+				<xs:element ref="svp" minOccurs="0"/>
+				<xs:element ref="svpt" minOccurs="0"/>
+				<xs:element ref="op" minOccurs="0"/>
+				<xs:element ref="ap" minOccurs="0"/>
+				<xs:element ref="dva" minOccurs="0"/>
+				<xs:element ref="ote" minOccurs="0"/>
+				<xs:element ref="lue" minOccurs="0"/>
+				<xs:element ref="pl" minOccurs="0"/>
+				<xs:element ref="otep" minOccurs="0"/>
+				<xs:element ref="plp" minOccurs="0"/>
+				<xs:element ref="curVal" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="oReq" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="grReq" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="ccPort" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="equiv" type="xs:string"/>
+	<xs:element name="equivPosType" type="xs:string"/>
+	<xs:element name="etNum" type="xs:string"/>
+	<xs:element name="exch" type="xs:string"/>
+	<xs:element name="exchAlias" type="xs:string"/>
+	<xs:element name="exchange">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="exch"/>
+				<xs:element ref="name" minOccurs="0"/>
+				<xs:element name="phyPf" type="PhyPf" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="debtPf" type="DebtPf" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="equityPf" type="EquityPf" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="futPf" type="FutPf" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="fwdPf" type="FwdPf" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="IRSwapPf" type="IRSwapPf" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="CDSwapPf" type="CDSwapPf" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="eDebtPf" type="EDebtPf" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="oopPf" type="OptionPF" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="oofPf" type="OptionPF" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="ooePf" type="OptionPF" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="cmbPf" type="CmbPf"/>
+					<xs:element name="oocPf" type="OptionPF"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="exercise" type="xs:string"/>
+	<xs:element name="fDeliv" type="xs:string"/>
+	<xs:element name="factor" type="xs:string"/>
+	<xs:element name="fdot" type="xs:string"/>
+	<xs:element name="fdotRule" type="xs:string"/>
+	<xs:element name="fee">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="val"/>
+				<xs:element ref="desc" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="feeTypeDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="name"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="fileFormat" type="xs:string"/>
+	<xs:element name="finalPriceRule" type="xs:string"/>
+	<xs:element name="finalizeMeth" type="xs:string"/>
+	<xs:element name="firm" type="xs:string"/>
+	<xs:element name="flexDesc" type="xs:string"/>
+	<xs:element name="fromCur" type="xs:string"/>
+	<xs:element name="fut">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cId"/>
+				<xs:element ref="alias" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="pe"/>
+				<xs:element ref="p" minOccurs="0"/>
+				<xs:element ref="priceType" minOccurs="0"/>
+				<xs:element ref="dvas" minOccurs="0"/>
+				<xs:element ref="d" minOccurs="0"/>
+				<xs:element ref="v" minOccurs="0"/>
+				<xs:element ref="volType" minOccurs="0"/>
+				<xs:element ref="cvf" minOccurs="0"/>
+				<xs:element ref="val" minOccurs="0"/>
+				<xs:element ref="sc" minOccurs="0"/>
+				<xs:element ref="setlDate" minOccurs="0"/>
+				<xs:element ref="t" minOccurs="0"/>
+				<xs:element ref="fdot" minOccurs="0"/>
+				<xs:element ref="ldot" minOccurs="0"/>
+				<xs:element ref="fDeliv" minOccurs="0"/>
+				<xs:element ref="lDeliv" minOccurs="0"/>
+				<xs:element ref="undC"/>
+				<xs:element ref="intrRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="futEqFactor" type="xs:string"/>
+	<xs:element name="gReq">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Requirement">
+					<xs:sequence>
+						<xs:element ref="som"/>
+						<xs:element ref="nlRisk"/>
+						<xs:element ref="nsRisk"/>
+						<xs:element ref="asomtr" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element ref="iaReq"/>
+							<xs:element ref="nReq"/>
+						</xs:choice>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element ref="nlr"/>
+							<xs:element ref="nsr"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="gd" type="xs:string"/>
+	<xs:element name="genericRate" type="xs:string"/>
+	<xs:element name="group">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="aVal"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="groupDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="aVal"/>
+				<xs:element ref="description" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="groupTypeDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="name"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="calDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="calId" type="xs:int"/>
+				<xs:element name="calCode" type="xs:string"/>
+				<xs:element ref="description" minOccurs="0"/>
+				<xs:element ref="stdWeekend"/>
+				<xs:element ref="holidays"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="stdWeekend">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="dayCode" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="holidays">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="dt" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="haircut" type="xs:string"/>
+	<xs:element name="haircutRsv" type="xs:string"/>
+	<xs:element name="hiVal" type="xs:string"/>
+	<xs:element name="homeLeg">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cc"/>
+				<xs:element ref="tn"/>
+				<xs:element ref="rs"/>
+				<xs:element ref="i"/>
+				<xs:element ref="rate" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="hours" type="xs:string"/>
+	<xs:element name="i" type="xs:string"/>
+	<xs:element name="ia" type="xs:string"/>
+	<xs:element name="iaLong" type="xs:int"/>
+	<xs:element name="iaReq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="isM"/>
+				<xs:element ref="pbc"/>
+				<xs:element ref="spanReq"/>
+				<xs:element ref="sr"/>
+				<xs:element ref="ia"/>
+				<xs:element ref="dr"/>
+				<xs:element ref="som"/>
+				<xs:element ref="pd" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="str" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="iatr" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="somtr" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="iaShort" type="xs:string"/>
+	<xs:element name="ialEquiv" type="xs:string"/>
+	<xs:element name="ialSplit" type="xs:string"/>
+	<xs:element name="iasEquiv" type="xs:string"/>
+	<xs:element name="iasSplit" type="xs:string"/>
+	<xs:element name="iatr">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tn"/>
+				<xs:element ref="ld"/>
+				<xs:element ref="sd"/>
+				<xs:element ref="rld"/>
+				<xs:element ref="rsd"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="id" type="xs:string"/>
+	<xs:element name="ie" type="xs:string"/>
+	<xs:element name="ieLong" type="xs:int"/>
+	<xs:element name="ieShort" type="xs:int"/>
+	<xs:element name="ielEquiv" type="xs:double"/>
+	<xs:element name="ielSplit" type="xs:double"/>
+	<xs:element name="iesEquiv" type="xs:double"/>
+	<xs:element name="iesSplit" type="xs:double"/>
+	<xs:element name="ietr">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tn"/>
+				<xs:element ref="ie"/>
+				<xs:element ref="iex"/>
+				<xs:element ref="wpr"/>
+				<xs:element ref="pr"/>
+				<xs:element ref="tr"/>
+				<xs:element ref="vr"/>
+				<xs:element ref="sr"/>
+				<xs:element ref="as"/>
+				<xs:element ref="ld"/>
+				<xs:element ref="sd"/>
+				<xs:element ref="rld"/>
+				<xs:element ref="rsd"/>
+				<xs:element ref="sv" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="iex" type="xs:string"/>
+	<xs:element name="interClearSpreads">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="clearSpread" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="interSpreads">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="dSpread"/>
+				<xs:element ref="sSpread"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="interTiers">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="tier"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="intraTiers">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="tier"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="isContractScale" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Contract or Delta Scaling flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isCust" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Customer or clearing flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isM" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Maintenance or initial flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isNetMargin" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Net or gross calculation type flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isNew" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Specifies whether this is a pre-existing or completely new port</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isRequired" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Leg requirement flag: if true, specifies that the leg must be present in order for the spread to be formed</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isSetl" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Settlement or intraday flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isTarget" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Target flag: Specifies whether this leg is the target of the spread</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isTargetReq" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Target requirement flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="applyFxRisk" type="xs:boolean"/>
+	<xs:element name="apportionRisk" type="xs:boolean"/>
+	<xs:element name="isDigital" type="xs:boolean"/>
+	<xs:element name="isin" type="xs:string"/>
+	<xs:element name="k" type="xs:string"/>
+	<xs:element name="lDeliv" type="xs:string"/>
+	<xs:element name="lbe" type="xs:string"/>
+	<xs:element name="ld" type="xs:string"/>
+	<xs:element name="ldot" type="xs:string"/>
+	<xs:element name="ldotRule" type="xs:string"/>
+	<xs:element name="ledgerBal" type="xs:string"/>
+	<xs:element name="lfv" type="xs:string"/>
+	<xs:element name="lhthresh" type="xs:string"/>
+	<xs:element name="limitSubAccountOffset" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Limit subaccount offset</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="limits" type="xs:string"/>
+	<xs:element name="limitsDesc" type="xs:string"/>
+	<xs:element name="liqRate">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="specificRate"/>
+				<xs:element ref="genericRate"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="listDesc" type="xs:string"/>
+	<xs:element name="listed" type="xs:string"/>
+	<xs:element name="llthresh" type="xs:string"/>
+	<xs:element name="loVal" type="xs:string"/>
+	<xs:element name="long" type="xs:int"/>
+	<xs:element name="lookAheadDays" type="xs:string"/>
+	<xs:element name="lookAheadYears" type="xs:string"/>
+	<xs:element name="lov" type="xs:string"/>
+	<xs:element name="lovf" type="xs:string"/>
+	<xs:element name="lpv" type="xs:string"/>
+	<xs:element name="lrate" type="xs:string"/>
+	<xs:element name="lreset" type="xs:string"/>
+	<xs:element name="lts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="date"/>
+				<xs:element ref="net"/>
+				<xs:element ref="p" minOccurs="0"/>
+				<xs:element ref="pl" minOccurs="0"/>
+				<xs:element ref="ts" minOccurs="0"/>
+				<xs:element ref="ctid"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="lue" type="xs:string"/>
+	<xs:element name="mp" type="xs:string"/>
+	<xs:element name="mpd" type="xs:string"/>
+	<xs:element name="mult" type="xs:string"/>
+	<xs:element name="nReq">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Requirement">
+					<xs:sequence>
+						<xs:element ref="sr"/>
+						<xs:element ref="ia"/>
+						<xs:element ref="basis" minOccurs="0"/>
+						<xs:element ref="dr"/>
+						<xs:element ref="ie"/>
+						<xs:element ref="iex"/>
+						<xs:element ref="som"/>
+						<xs:element ref="pd" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element ref="str" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element ref="iatr" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element ref="ietr" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element ref="somtr" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="name" type="xs:string"/>
+	<xs:element name="net" type="xs:int"/>
+	<xs:element name="nl" type="xs:string"/>
+	<xs:element name="nlEquiv" type="xs:string"/>
+	<xs:element name="nlRisk" type="xs:string"/>
+	<xs:element name="nlSplit" type="xs:string"/>
+	<xs:element name="nlr">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="isM"/>
+				<xs:element ref="pbc"/>
+				<xs:element ref="spanReq"/>
+				<xs:element ref="dr"/>
+				<xs:element ref="pd" maxOccurs="unbounded"/>
+				<xs:element ref="str" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="no" type="xs:string"/>
+	<xs:element name="nrpn" type="xs:string"/>
+	<xs:element name="nrps" type="xs:string"/>
+	<xs:element name="ns" type="xs:string"/>
+	<xs:element name="nsEquiv" type="xs:string"/>
+	<xs:element name="nsRisk" type="xs:string"/>
+	<xs:element name="nsSplit" type="xs:string"/>
+	<xs:element name="nsr">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="isM"/>
+				<xs:element ref="pbc"/>
+				<xs:element ref="spanReq"/>
+				<xs:element ref="dr"/>
+				<xs:element ref="som"/>
+				<xs:element ref="pd" maxOccurs="unbounded"/>
+				<xs:element ref="str" maxOccurs="unbounded"/>
+				<xs:element ref="somtr" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="numLegsReq" type="xs:string"/>
+	<xs:element name="numerator" type="xs:string"/>
+	<xs:element name="o" type="xs:string"/>
+	<xs:element name="oReq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="isM"/>
+				<xs:element ref="pbc"/>
+				<xs:element ref="spanReq"/>
+				<xs:element ref="addlReq" minOccurs="0"/>
+				<xs:element ref="crossSavings" minOccurs="0"/>
+				<xs:element ref="anov"/>
+				<xs:element ref="oReq" minOccurs="0"/>
+				<xs:element ref="curReq" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="grOReq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="isM"/>
+				<xs:element ref="pbc"/>
+				<xs:element ref="spanReq"/>
+				<xs:element ref="addlReq" minOccurs="0"/>
+				<xs:element ref="crossSavings" minOccurs="0"/>
+				<xs:element ref="anov"/>
+				<xs:element ref="exLOV" minOccurs="0"/>
+				<xs:element ref="sumCCReq" minOccurs="0"/>
+				<xs:element ref="sumCCExLOV" minOccurs="0"/>
+				<xs:element ref="totalReq" minOccurs="0"/>
+				<xs:element ref="grOReq" minOccurs="0"/>
+				<xs:element ref="grCurReq" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="exLOV" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Excess Long Option Value</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="sumCCReq" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Sum of PB requirements for individual combined commodities</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="sumCCExLOV" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Sum of excess long option values from combined commodities </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="grReq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group"/>
+				<xs:element ref="lfv" minOccurs="0"/>
+				<xs:element ref="sfv" minOccurs="0"/>
+				<xs:element ref="lov" minOccurs="0"/>
+				<xs:element ref="sov" minOccurs="0"/>
+				<xs:element ref="lovf" minOccurs="0"/>
+				<xs:element ref="sovf" minOccurs="0"/>
+				<xs:element ref="lpv" minOccurs="0"/>
+				<xs:element ref="spv" minOccurs="0"/>
+				<xs:element ref="sv" minOccurs="0"/>
+				<xs:element ref="svt" minOccurs="0"/>
+				<xs:element ref="svp" minOccurs="0"/>
+				<xs:element ref="svpt" minOccurs="0"/>
+				<xs:element ref="op" minOccurs="0"/>
+				<xs:element ref="ap" minOccurs="0"/>
+				<xs:element ref="dva" minOccurs="0"/>
+				<xs:element ref="ote" minOccurs="0"/>
+				<xs:element ref="lue" minOccurs="0"/>
+				<xs:element ref="pl" minOccurs="0"/>
+				<xs:element ref="otep" minOccurs="0"/>
+				<xs:element ref="plp" minOccurs="0"/>
+				<xs:element ref="curVal" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="grOReq" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="grCurReq">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="currency"/>
+				<xs:element ref="spanReq"/>
+				<xs:element ref="addlReq" minOccurs="0"/>
+				<xs:element ref="crossSavings" minOccurs="0"/>
+				<xs:element ref="anov"/>
+				<xs:element ref="exLOV" minOccurs="0"/>
+				<xs:element ref="sumCCReq" minOccurs="0"/>
+				<xs:element ref="sumCCExLOV" minOccurs="0"/>
+				<xs:element ref="totalReq" minOccurs="0"/>
+				<xs:element ref="grCurReq" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="od" type="xs:string"/>
+	<xs:element name="oopDeltaMeth" type="xs:string"/>
+	<xs:element name="op" type="xs:string"/>
+	<xs:element name="opt">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cId"/>
+				<xs:element ref="alias" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="o"/>
+				<xs:element ref="k"/>
+				<xs:element ref="p"/>
+				<xs:element ref="pq" minOccurs="0"/>
+				<xs:element ref="priceType" minOccurs="0"/>
+				<xs:element ref="d" minOccurs="0"/>
+				<xs:element ref="v" minOccurs="0"/>
+				<xs:element ref="volType" minOccurs="0"/>
+				<xs:element ref="cvf" minOccurs="0"/>
+				<xs:element ref="svf" minOccurs="0"/>
+				<xs:element ref="val" minOccurs="0"/>
+				<xs:element ref="sc" minOccurs="0"/>
+				<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="oqty" type="xs:string"/>
+	<xs:element name="ot">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="date"/>
+				<xs:element ref="net"/>
+				<xs:element ref="oqty" minOccurs="0"/>
+				<xs:element ref="p" minOccurs="0"/>
+				<xs:element ref="mp" minOccurs="0"/>
+				<xs:element ref="mpd" minOccurs="0"/>
+				<xs:element ref="ote" minOccurs="0"/>
+				<xs:element ref="pl" minOccurs="0"/>
+				<xs:element ref="ts" minOccurs="0"/>
+				<xs:element ref="ctid" minOccurs="0"/>
+				<xs:element ref="lts" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ote" type="xs:string"/>
+	<xs:element name="otep" type="xs:string"/>
+	<xs:element name="ots">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ot" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="otss">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ot" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="outr" type="xs:string"/>
+	<xs:element name="p" type="xs:double"/>
+	<xs:element name="discFactor" type="xs:double"/>
+	<xs:element name="pLeg">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cc"/>
+				<xs:element ref="pe"/>
+				<xs:element ref="rs"/>
+				<xs:element ref="i"/>
+				<xs:element ref="rate" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="pairedPoint" type="xs:string"/>
+	<xs:element name="parentAcct">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="firm"/>
+				<xs:element ref="acctId"/>
+				<xs:element ref="seg" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="refAcct">
+		<xs:annotation>
+			<xs:documentation>Similar to 'parentAcct' element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="firm"/>
+				<xs:element ref="acctId"/>
+				<xs:element ref="seg" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="pbRateDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="isCust"/>
+				<xs:element ref="acctType"/>
+				<xs:element ref="isM"/>
+				<xs:element ref="pbc"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="pbc" type="xs:string"/>
+	<xs:element name="pclient" type="xs:string"/>
+	<xs:element name="pd">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="pe"/>
+				<xs:element ref="od"/>
+				<xs:element ref="gd"/>
+				<xs:element ref="rd"/>
+				<xs:element ref="drs" minOccurs="0"/>
+				<xs:element ref="dro" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="pe" type="PeriodCode"/>
+	<xs:element name="coupon" type="xs:double"/>
+	<xs:element name="runSpread" type="xs:double"/>
+	<xs:element name="pfAlias" type="xs:string"/>
+	<xs:element name="pfCode" type="xs:string"/>
+	<xs:element name="pfId" type="xs:int"/>
+	<xs:element name="pfLink">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="exch"/>
+				<xs:element ref="pfId"/>
+				<xs:element ref="pfCode" minOccurs="0"/>
+				<xs:element ref="pfType" minOccurs="0"/>
+				<xs:element ref="sc"/>
+				<xs:element ref="cmbMeth" minOccurs="0"/>
+				<xs:element ref="applyBasisRisk" minOccurs="0"/>
+				<xs:element ref="arrayPrecision" minOccurs="0"/>
+				<xs:element ref="oopDeltaMeth" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="arrayPrecision" type="xs:int"/>
+	<xs:element name="pfType" type="xs:string"/>
+	<xs:element name="pl" type="xs:string"/>
+	<xs:element name="plp" type="xs:string"/>
+	<xs:element name="pmRate" type="xs:string"/>
+	<xs:element name="pmpsRate">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="val"/>
+				<xs:element ref="pmRate"/>
+				<xs:element ref="psRate"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="point" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>Risk array point number</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="pointDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="scanPointDef" maxOccurs="unbounded"/>
+				<xs:element ref="deltaPointDef" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="zeroCurve">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="currency"/>
+				<xs:element ref="description"/>
+				<xs:element ref="zeroCurveData" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="zeroCurveData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="isCurrent" type="xs:byte" minOccurs="0"/>
+				<xs:element ref="bDate"/>
+				<xs:element ref="tenor" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="bDate" type="xs:string"/>
+	<xs:element name="tenor">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tm"/>
+				<xs:element ref="val"/>
+				<xs:element name="offset" type="xs:int"/>
+				<xs:element name="logret" type="xs:double" minOccurs="0"/>
+				<xs:element name="isValAnchor" type="xs:byte" minOccurs="0"/>
+				<xs:element name="isHvarAnchor" type="xs:byte" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tm" type="xs:double"/>
+	<xs:element name="hvarMarginParams">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="hvarSet" maxOccurs="unbounded"/>
+				<xs:element ref="fxHvarSet" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="hvarSet">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element name="zeroCurveId" type="xs:int"/>
+				<xs:element ref="description" minOccurs="0"/>
+				<xs:element ref="undHvarSetId"/>
+				<xs:element ref="lambda"/>
+				<xs:element ref="percentile"/>
+				<xs:element ref="floor"/>
+				<xs:element ref="lookBack"/>
+				<xs:element ref="lookBackData"/>
+				<xs:element ref="useRollNum"/>
+				<xs:element ref="lag"/>
+				<xs:element ref="seed" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="hVal" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="hLogRet" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="hRet" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="seed">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tn"/>
+				<xs:element name="offset" type="xs:int"/>
+				<xs:element ref="tm" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="val"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="hVal" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Optional comma delimited csv table of hvar dates (rows) by rolling numbers or offsets (columns) each cell containing historical values or log returns or returns</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="hLogRet" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Optional comma delimited csv table of hvar dates (rows) by rolling numbers or offsets (columns) each cell containing historical values or log returns or returns</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="hRet" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Optional comma delimited csv table of hvar dates (rows) by rolling numbers or offsets (columns) each cell containing historical values or log returns or returns</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="undHvarSetId" type="xs:int"/>
+	<xs:element name="lambda" type="xs:double"/>
+	<xs:element name="percentile" type="xs:double"/>
+	<xs:element name="floor" type="xs:double"/>
+	<xs:element name="lookBack" type="xs:int"/>
+	<xs:element name="lookBackData" type="xs:int"/>
+	<xs:element name="useRollNum" type="xs:boolean" default="0">
+			<xs:annotation>
+					<xs:documentation>Indicating usage of rolling contract number to support Hvar in  ED, Treasuries, CCE</xs:documentation>
+			</xs:annotation>
+	</xs:element>
+	<xs:element name="lag" type="xs:int"/>
+	<xs:element name="fxHvarSet">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="fromCur"/>
+				<xs:element ref="toCur"/>
+				<xs:element ref="description" minOccurs="0"/>
+				<xs:element ref="lambda"/>
+				<xs:element ref="percentile" minOccurs="0"/>
+				<xs:element ref="floor"/>
+				<xs:element ref="lookBack"/>
+				<xs:element ref="lookBackData"/>
+				<xs:element ref="lag"/>
+				<xs:element name="seed" type="xs:double"/>
+				<xs:element ref="fxHvarData" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="fxHvarData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="bDate"/>
+				<xs:element name="logRet" type="xs:double"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cdsMarginParams">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="cdsIGHYThreshold" type="xs:double"/>
+				<xs:choice>
+					<xs:element name="cdsIGCompressionShock" type="xs:double"/>
+					<xs:element name="cdsIGCompressionShockPct" type="xs:double"/>
+				</xs:choice>
+				<xs:choice>
+					<xs:element name="cdsHYCompressionShock" type="xs:double"/>
+					<xs:element name="cdsHYCompressionShockPct" type="xs:double"/>
+				</xs:choice>
+				<xs:element name="cdsIGSingleMinMarginPct" type="xs:double"/>
+				<xs:element name="cdsHYSingleMinMarginPct" type="xs:double"/>
+				<xs:element name="cdsIGIndexMinMarginPct" type="xs:double"/>
+				<xs:element name="cdsHYIndexMinMarginPct" type="xs:double"/>
+				<xs:element name="cdsIGCurveShockPct" type="xs:double"/>
+				<xs:element name="cdsHYCurveShockPct" type="xs:double"/>
+				<xs:element name="cdsIGLiqMarginIntercept" type="xs:double"/>
+				<xs:element name="cdsHYLiqMarginIntercept" type="xs:double"/>
+				<xs:element name="cdsIGLiqMarginCoefficient" type="xs:double"/>
+				<xs:element name="cdsHYLiqMarginCoefficient" type="xs:double"/>
+				<xs:element name="cdsIGLiqMarginExponent" type="xs:double"/>
+				<xs:element name="cdsHYLiqMarginExponent" type="xs:double"/>
+				<xs:element name="cdsIGLiqMarginScale" type="xs:double"/>
+				<xs:element name="cdsHYLiqMarginScale" type="xs:double"/>
+				<xs:element name="cdsHYLiqMarginScale" type="xs:double"/>
+				<xs:element name="cdsIGLiqMarginBidAsk" type="xs:double"/>
+				<xs:element name="cdsHYLiqMarginBidAsk" type="xs:double"/>
+				<xs:element name="cdsIGLiqMarginDST" type="xs:double"/>
+				<xs:element name="cdsHYLiqMarginDST" type="xs:double"/>
+				<xs:element name="cdsIGLiqMarginOTRPV01" type="xs:double"/>
+				<xs:element name="cdsHYLiqMarginOTRPV01" type="xs:double"/>
+				<xs:element name="cdsDeviationPct" type="xs:double"/>
+				<xs:element name="cdsSDV01Weight" type="xs:double"/>
+				<xs:element name="cdsRDV01Weight" type="xs:double"/>
+				<xs:element name="cdsDV01Exponent" type="xs:double"/>
+				<xs:element name="cdsIGOTRBidAskCap" type="xs:double"/>
+				<xs:element name="cdsHYOTRBidAskCap" type="xs:double"/>
+				<xs:element ref="sectorDef" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sector" type="xs:string"/>
+	<xs:element name="sectorDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="sector"/>
+				<xs:element name="ig" type="IGHY"/>
+				<xs:element name="hy" type="IGHY"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="IGHY">
+		<xs:sequence>
+			<xs:element name="dst" type="xs:double"/>
+			<xs:element name="dstExponent" type="xs:double"/>
+			<xs:element name="dstFloor" type="xs:double"/>
+			<xs:element name="capPct" type="xs:double"/>
+			<xs:element name="bidAskFloor" type="xs:double"/>
+			<xs:element name="concCoeficient" type="xs:double"/>
+			<xs:element name="concExponent" type="xs:double"/>
+			<xs:element name="concIntercept" type="xs:double"/>
+			<xs:element name="concScale" type="xs:double"/>
+			<xs:element name="curveShockPct" type="xs:double"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="pointDesc" type="xs:string"/>
+	<xs:element name="pointInTime">
+		<xs:annotation>
+			<xs:documentation>Point in time </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="date"/>
+				<xs:element ref="isSetl"/>
+				<xs:element ref="setlQualifier" minOccurs="0"/>
+				<xs:element ref="time" minOccurs="0"/>
+				<xs:element ref="run" minOccurs="0"/>
+				<xs:element ref="clearingOrg" maxOccurs="unbounded"/>
+				<xs:element ref="businessFunction" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="portfolio" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="portfolio">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="firm"/>
+				<xs:element ref="acctId"/>
+				<xs:element ref="acctType"/>
+				<xs:element ref="isCust"/>
+				<xs:element ref="seg" minOccurs="0"/>
+				<xs:element ref="acctSubType" minOccurs="0"/>
+				<xs:element ref="parentAcct" minOccurs="0"/>
+				<xs:element ref="linkedAccts" minOccurs="0"/>
+				<xs:element ref="isNew"/>
+				<xs:element ref="qib" minOccurs="0"/>
+				<xs:element ref="pclient" minOccurs="0"/>
+				<xs:element ref="equivPosType" minOccurs="0"/>
+				<xs:element name="custPortUseLov" type="CustPortUseLov" minOccurs="0"/>
+				<xs:element ref="concApplies" minOccurs="0"/>
+				<xs:element ref="currency"/>
+				<xs:element ref="ledgerBal"/>
+				<xs:element ref="ote"/>
+				<xs:element ref="securities"/>
+				<xs:element ref="lue" minOccurs="0"/>
+				<xs:element ref="lfv" minOccurs="0"/>
+				<xs:element ref="sfv" minOccurs="0"/>
+				<xs:element ref="lov" minOccurs="0"/>
+				<xs:element ref="sov" minOccurs="0"/>
+				<xs:element ref="lovf" minOccurs="0"/>
+				<xs:element ref="sovf" minOccurs="0"/>
+				<xs:element ref="lpv" minOccurs="0"/>
+				<xs:element ref="spv" minOccurs="0"/>
+				<xs:element ref="sv" minOccurs="0"/>
+				<xs:element ref="svt" minOccurs="0"/>
+				<xs:element ref="svp" minOccurs="0"/>
+				<xs:element ref="svpt" minOccurs="0"/>
+				<xs:element ref="op" minOccurs="0"/>
+				<xs:element ref="ap" minOccurs="0"/>
+				<xs:element ref="dva" minOccurs="0"/>
+				<xs:element ref="pl" minOccurs="0"/>
+				<xs:element ref="otep" minOccurs="0"/>
+				<xs:element ref="plp" minOccurs="0"/>
+				<xs:element ref="curVal" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="oReq" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="ecPort" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="posLimit" type="xs:string"/>
+	<xs:element name="positionsAllowed" type="xs:string"/>
+	<xs:element name="pq" type="xs:string"/>
+	<xs:element name="pr" type="xs:string"/>
+	<xs:element name="priceDesc" type="xs:string"/>
+	<xs:element name="priceDl" type="xs:int"/>
+	<xs:element name="couponDl" type="xs:int"/>
+	<xs:element name="runSpreadDl" type="xs:int"/>
+	<xs:element name="recoveryRate" type="xs:double"/>
+	<xs:element name="priceFmt" type="xs:string"/>
+	<xs:element name="priceMeth" type="xs:string"/>
+	<xs:element name="priceModel" type="xs:string"/>
+	<xs:element name="priceScan" type="xs:double"/>
+	<xs:element name="priceScanDown" type="xs:double"/>
+	<xs:element name="priceScanDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mult"/>
+				<xs:element ref="numerator" minOccurs="0"/>
+				<xs:element ref="denominator" minOccurs="0"/>
+				<xs:element name="defType" type="DefType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="priceScanPct" type="xs:double"/>
+	<xs:element name="priceScanDownPct" type="xs:double"/>
+	<xs:element name="priceType" type="xs:string"/>
+	<xs:element name="priority" type="xs:string"/>
+	<xs:element name="procMeth" type="xs:string"/>
+	<xs:element name="psRate" type="xs:double"/>
+	<xs:element name="pss" type="xs:string"/>
+	<xs:element name="qib" type="xs:boolean" default="1">
+		<xs:annotation>
+			<xs:documentation>Qualified Institutional Buyer </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="quoted" type="xs:string"/>
+	<xs:element name="r" type="xs:int"/>
+	<xs:element name="ra">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="a" maxOccurs="unbounded"/>
+				<xs:element ref="d"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="rate">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="val"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="rateTiers">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="tier"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="rd" type="xs:string"/>
+	<xs:element name="refPrice" type="xs:double"/>
+	<xs:element name="refPriceFlag" type="xs:string"/>
+	<xs:element name="riskExponent" type="xs:int"/>
+	<xs:element name="rld" type="xs:string"/>
+	<xs:element name="rpLeg">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cc"/>
+				<xs:element ref="rpNum"/>
+				<xs:element ref="rs"/>
+				<xs:element ref="i"/>
+				<xs:element ref="btNum" minOccurs="0"/>
+				<xs:element ref="etNum" minOccurs="0"/>
+				<xs:element ref="rate" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="rpNum" type="xs:string"/>
+	<xs:element name="rs" type="xs:string"/>
+	<xs:element name="rsd" type="xs:string"/>
+	<xs:element name="run" type="xs:string"/>
+	<xs:element name="s" type="xs:string"/>
+	<xs:element name="sLeg">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cc"/>
+				<xs:element ref="isTarget"/>
+				<xs:element ref="isRequired" minOccurs="0"/>
+				<xs:element ref="i" minOccurs="0"/>
+				<xs:element ref="rate" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sPe" type="xs:string"/>
+	<xs:element name="sSpread">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="spread"/>
+				<xs:element ref="isTargetReq" minOccurs="0"/>
+				<xs:element ref="numLegsReq" minOccurs="0"/>
+				<xs:element ref="applyFxRisk" minOccurs="0"/>
+				<xs:element ref="apportionRisk" minOccurs="0"/>
+				<xs:element ref="sPointDef" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="rate" maxOccurs="unbounded"/>
+				<xs:element ref="sLeg" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sc" type="xs:string"/>
+	<xs:element name="scanPointDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="point"/>
+				<xs:element ref="priceScanDef"/>
+				<xs:element ref="volScanDef"/>
+				<xs:element ref="weight"/>
+				<xs:element ref="pairedPoint"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="scanRate">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="priceScan" minOccurs="0"/>
+				<xs:element ref="priceScanPct" minOccurs="0"/>
+				<xs:element ref="volScan" minOccurs="0"/>
+				<xs:element ref="volScanPct" minOccurs="0"/>
+				<xs:element ref="priceScanDown" minOccurs="0"/>
+				<xs:element ref="priceScanDownPct" minOccurs="0"/>
+				<xs:element ref="volScanDown" minOccurs="0"/>
+				<xs:element ref="volScanDownPct" minOccurs="0"/>
+				<xs:element ref="quoteInOptTerms" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="scanTiers">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="tier"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sco" type="xs:string"/>
+	<xs:element name="sd" type="xs:string"/>
+	<xs:element name="securities" type="xs:string"/>
+	<xs:element name="seg" type="xs:string"/>
+	<xs:element name="series">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="pe"/>
+				<xs:element ref="alias" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="v" minOccurs="0"/>
+				<xs:element ref="volType" minOccurs="0"/>
+				<xs:element ref="volSrc" minOccurs="0"/>
+				<xs:element ref="setlDate" minOccurs="0"/>
+				<xs:element ref="t" minOccurs="0"/>
+				<xs:element ref="fdot" minOccurs="0"/>
+				<xs:element ref="ldot" minOccurs="0"/>
+				<xs:element ref="seriesSetlMeth" minOccurs="0"/>
+				<xs:element ref="cvf" minOccurs="0"/>
+				<xs:element ref="svf" minOccurs="0"/>
+				<xs:element ref="sc"/>
+				<xs:element ref="refPriceFlag" minOccurs="0"/>
+				<xs:element ref="refPrice" minOccurs="0"/>
+				<xs:element ref="undC"/>
+				<xs:element ref="intrRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="divRate" minOccurs="0"/>
+				<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="opt" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="seriesSetlMeth" type="xs:string"/>
+	<xs:element name="setlDate" type="xs:string"/>
+	<xs:element name="setlDateRule" type="xs:string"/>
+	<xs:element name="setlMeth" type="xs:string"/>
+	<xs:element name="setlQualifier" type="xs:string"/>
+	<xs:element name="sfv" type="xs:string"/>
+	<xs:element name="short" type="xs:string"/>
+	<xs:element name="shthresh" type="xs:string"/>
+	<xs:element name="slthresh" type="xs:string"/>
+	<xs:element name="sno" type="xs:string"/>
+	<xs:element name="som" type="xs:string"/>
+	<xs:element name="somMeth" type="xs:string"/>
+	<xs:element name="somTiers">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="tier"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="somtr">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tn"/>
+				<xs:element ref="som"/>
+				<xs:element ref="sco"/>
+				<xs:element ref="spo"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sov" type="xs:string"/>
+	<xs:element name="sovf" type="xs:string"/>
+	<xs:element name="spanFile">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="spanVersion" minOccurs="0"/>
+				<xs:element ref="fileFormat" minOccurs="0"/>
+				<xs:element ref="created" minOccurs="0"/>
+				<xs:element ref="definitions"/>
+				<xs:element ref="pointInTime" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="spanReq" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>SPAN risk requirement</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="totalReq" type="xs:double"/>
+	<xs:element name="spanVersion" type="xs:string"/>
+	<xs:element name="specificRate" type="xs:string"/>
+	<xs:element name="specs">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="listed" minOccurs="0"/>
+				<xs:element ref="aliasDesc" minOccurs="0"/>
+				<xs:element ref="unitDesc" minOccurs="0"/>
+				<xs:element ref="quoted" minOccurs="0"/>
+				<xs:element ref="priceDesc" minOccurs="0"/>
+				<xs:element ref="pointDesc" minOccurs="0"/>
+				<xs:element ref="cabDesc" minOccurs="0"/>
+				<xs:element ref="listDesc" minOccurs="0"/>
+				<xs:element ref="flexDesc" minOccurs="0"/>
+				<xs:element ref="strikeDesc" minOccurs="0"/>
+				<xs:element ref="posLimit" minOccurs="0"/>
+				<xs:element ref="setlDateRule" minOccurs="0"/>
+				<xs:element ref="fdotRule" minOccurs="0"/>
+				<xs:element ref="ldotRule" minOccurs="0"/>
+				<xs:element ref="finalPriceRule" minOccurs="0"/>
+				<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="fee" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="split" type="xs:string"/>
+	<xs:element name="spo" type="xs:string"/>
+	<xs:element name="spotMeth" type="xs:string"/>
+	<xs:element name="spotRate">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="pe"/>
+				<xs:element ref="sprd"/>
+				<xs:element ref="outr"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sprd" type="xs:string"/>
+	<xs:element name="spread" type="xs:string"/>
+	<xs:element name="spv" type="xs:string"/>
+	<xs:element name="sr" type="xs:string"/>
+	<xs:element name="srate" type="xs:string"/>
+	<xs:element name="sreset" type="xs:string"/>
+	<xs:element name="str">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tn"/>
+				<xs:element ref="sr"/>
+				<xs:element ref="as"/>
+				<xs:element ref="sv" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="strikeCur" type="xs:string"/>
+	<xs:element name="strikeDesc" type="xs:string"/>
+	<xs:element name="strikeDl" type="xs:string"/>
+	<xs:element name="strikeFmt" type="xs:string"/>
+	<xs:element name="subType" type="xs:string"/>
+	<xs:element name="superInterClearSpreads">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="dSpread" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="superSpreads">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="dSpread"/>
+				<xs:element ref="sSpread"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sv" type="xs:string"/>
+	<xs:element name="svf" type="xs:string"/>
+	<xs:element name="svp" type="xs:string"/>
+	<xs:element name="svpt" type="xs:string"/>
+	<xs:element name="svt" type="xs:string"/>
+	<xs:element name="symbol" type="xs:string"/>
+	<xs:element name="t" type="xs:string"/>
+	<xs:element name="tLeg">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cc"/>
+				<xs:element ref="tn"/>
+				<xs:element ref="rs"/>
+				<xs:element ref="i"/>
+				<xs:element ref="rate" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tbn" type="xs:string"/>
+	<xs:element name="tick">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id" minOccurs="0"/>
+				<xs:element ref="val"/>
+				<xs:element ref="loVal" minOccurs="0"/>
+				<xs:element ref="hiVal" minOccurs="0"/>
+				<xs:element ref="desc" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tickTypeDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="name"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tier">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tn"/>
+				<xs:element ref="sPe" minOccurs="0"/>
+				<xs:element ref="ePe" minOccurs="0"/>
+				<xs:element ref="tne" minOccurs="0"/>
+				<xs:element ref="tbn" minOccurs="0"/>
+				<xs:element ref="btn" minOccurs="0"/>
+				<xs:element ref="brk" minOccurs="0"/>
+				<xs:choice>
+					<xs:choice>
+						<xs:element ref="rate" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:choice>
+					<xs:choice>
+						<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:choice>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="time" type="xs:string"/>
+	<xs:element name="tn" type="xs:string"/>
+	<xs:element name="tne" type="xs:string"/>
+	<xs:element name="toCur" type="xs:string"/>
+	<xs:element name="tr" type="xs:string"/>
+	<xs:element name="ts" type="xs:string"/>
+	<xs:element name="type" type="xs:string"/>
+	<xs:element name="undC">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="exch"/>
+				<xs:element ref="pfId"/>
+				<xs:element ref="cId"/>
+				<xs:element ref="s"/>
+				<xs:element ref="i"/>
+				<xs:element name="legPriceFlag" type="LegPriceFlag" minOccurs="0"/>
+				<xs:element ref="legPrice" minOccurs="0"/>
+				<xs:element ref="type" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="undPf">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="exch"/>
+				<xs:element ref="pfId"/>
+				<xs:element ref="pfCode" minOccurs="0"/>
+				<xs:element ref="pfType" minOccurs="0"/>
+				<xs:element ref="s"/>
+				<xs:element ref="i"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="unitDesc" type="xs:string"/>
+	<xs:element name="uom" type="xs:string"/>
+	<xs:element name="uomQty" type="xs:string"/>
+	<xs:element name="useLovPct" type="xs:string"/>
+	<xs:element name="useOTCRounding" type="xs:string"/>
+	<xs:element name="v" type="xs:double"/>
+	<xs:element name="val" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Value</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="value" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Value</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="valueMeth" type="xs:string"/>
+	<xs:element name="venue">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="hours" minOccurs="0"/>
+				<xs:element ref="listDesc" minOccurs="0"/>
+				<xs:element ref="flexDesc" minOccurs="0"/>
+				<xs:element ref="strikeDesc" minOccurs="0"/>
+				<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="limits" minOccurs="0"/>
+				<xs:element ref="limitsDesc" minOccurs="0"/>
+				<xs:element ref="fdotRule" minOccurs="0"/>
+				<xs:element ref="ldotRule" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="venueDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"/>
+				<xs:element ref="name"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="vmRate">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:element ref="lrate"/>
+				<xs:element ref="lreset"/>
+				<xs:element ref="llthresh"/>
+				<xs:element ref="lhthresh"/>
+				<xs:element ref="srate"/>
+				<xs:element ref="sreset"/>
+				<xs:element ref="slthresh"/>
+				<xs:element ref="shthresh"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="volRate">
+		<xs:annotation>
+			<xs:documentation>If "spreadType" in dSpread is DELTAVOL, this should contain volatility offset rates.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="rate" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cdsRate">
+		<xs:annotation>
+			<xs:documentation>CDS rate</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="r"/>
+				<xs:choice>
+					<xs:element name="cdsSystematicShock" type="xs:double">
+						<xs:annotation>
+							<xs:documentation>Parallel shift of runnung spread curve to be applied to all instruments in CC in absoloute amount</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="cdsSystematicShockPct" type="xs:double">
+						<xs:annotation>
+							<xs:documentation>Parallel shift of runnung spread curve to be applied to all instruments in CC in %. Persentage shift is relative to 5 year running spread.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+				<xs:choice>
+					<xs:element name="cdsSectorShock" type="xs:double">
+						<xs:annotation>
+							<xs:documentation>Parallel shift of runnung spread curve to be applied to all instruments in CC in absoloute amount</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="cdsSectorShockPct" type="xs:double">
+						<xs:annotation>
+							<xs:documentation>Parallel shift of runnung spread curve to be applied to all instruments in CC in %. Persentage shift is relative to 5 year running spread.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="intrRate">
+		<xs:annotation>
+			<xs:documentation>Risk-free continuously compounded annual interest rate in %</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="val"/>
+				<xs:element name="rl" type="xs:double">
+					<xs:annotation>
+						<xs:documentation>Risk level (zero for risk-free)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="cpm" type="xs:double">
+					<xs:annotation>
+						<xs:documentation>Compounding period in months</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="tm" type="xs:double" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Term in months</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="exm" type="xs:double">
+					<xs:annotation>
+						<xs:documentation>Expression period in months</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="volScan" type="xs:double"/>
+	<xs:element name="volScanDown" type="xs:double"/>
+	<xs:element name="volScanDownPct" type="xs:double"/>
+	<xs:element name="volScanDef">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mult"/>
+				<xs:element ref="numerator" minOccurs="0"/>
+				<xs:element ref="denominator" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="volScanPct" type="xs:double"/>
+	<xs:element name="volSrc" type="xs:string"/>
+	<xs:element name="volType" type="xs:string"/>
+	<xs:element name="vr" type="xs:string"/>
+	<xs:element name="weight" type="xs:double"/>
+	<xs:element name="wfprMeth" type="xs:string"/>
+	<xs:element name="wpr" type="xs:string"/>
+	<xs:element name="savings" type="xs:double"/>
+	<xs:element name="pbValue" type="xs:double"/>
+	<xs:element name="used" type="xs:int"/>
+	<xs:element name="concApplies" type="xs:boolean" default="0">
+		<xs:annotation>
+			<xs:documentation>Concentration applies flag</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="concScaleUp" type="xs:double" default="0">
+		<xs:annotation>
+			<xs:documentation>Scale-up percentage for concentration requirements</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="binaryArrays" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Binary arrays</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="limitArraysTo16Points" type="xs:boolean"/>
+	<xs:element name="quoteInOptTerms" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>True (1) – means that scan rate is quoted in option terms; False (0 - default) – means that scan rate is quoted in underlying terms</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="crossSavings" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Reduction to the SPAN requirement due to risk offsets between linked portfolios, for example clearing-level spreads between performance bond account of related clearing firms.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="spotChargeAdj" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Additional component of the delivery (spot) charge, or adjustments to this charge.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="linkedAccts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="creditDistMeth" type="CreditDistMeth"/>
+				<xs:element ref="refAcct" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="legPrice" type="xs:double">
+		<xs:annotation>
+			<xs:documentation>Leg price</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ProductFamily" abstract="true">
+		<xs:sequence>
+			<xs:element ref="pfId"/>
+			<xs:element ref="pfCode"/>
+			<xs:element ref="domain" minOccurs="0"/>
+			<xs:element ref="specs" minOccurs="0"/>
+			<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="alias" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="name" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NonOptionPF" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="ProductFamily">
+				<xs:sequence>
+					<xs:element ref="currency"/>
+					<xs:element ref="contractSize" minOccurs="0"/>
+					<xs:element ref="uomQty" minOccurs="0"/>
+					<xs:element ref="uom" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="eqPosFactor" minOccurs="0"/>
+					<xs:element ref="notionAmt" minOccurs="0"/>
+					<xs:element ref="priceDl" minOccurs="0"/>
+					<xs:element ref="priceFmt" minOccurs="0"/>
+					<xs:element ref="valueMeth"/>
+					<xs:element ref="priceMeth" minOccurs="0"/>
+					<xs:element ref="setlMeth" minOccurs="0"/>
+					<xs:element ref="useOTCRounding" minOccurs="0"/>
+					<xs:element ref="positionsAllowed" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OptionPF">
+		<xs:complexContent>
+			<xs:extension base="ProductFamily">
+				<xs:sequence>
+					<xs:element ref="exercise" minOccurs="0"/>
+					<xs:element ref="currency"/>
+					<xs:element ref="contractSize" minOccurs="0"/>
+					<xs:element ref="uomQty" minOccurs="0"/>
+					<xs:element ref="uom" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="isVariableTick" minOccurs="0"/>
+					<xs:element ref="notionAmt" minOccurs="0"/>
+					<xs:element ref="priceDl" minOccurs="0"/>
+					<xs:element ref="priceFmt" minOccurs="0"/>
+					<xs:element ref="strikeDl" minOccurs="0"/>
+					<xs:element ref="strikeFmt" minOccurs="0"/>
+					<xs:element ref="cab"/>
+					<xs:element ref="valueMeth"/>
+					<xs:element ref="priceMeth" minOccurs="0"/>
+					<xs:element ref="setlMeth" minOccurs="0"/>
+					<xs:element ref="priceModel"/>
+					<xs:element ref="useOTCRounding" minOccurs="0"/>
+					<xs:element ref="positionsAllowed" minOccurs="0"/>
+					<xs:element ref="undPf"/>
+					<xs:element ref="series" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="isVariableTick" type="xs:boolean"/>
+	<xs:complexType name="PhyPf">
+		<xs:complexContent>
+			<xs:extension base="NonOptionPF">
+				<xs:sequence>
+					<xs:element name="phy" type="Phy" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DebtPf">
+		<xs:complexContent>
+			<xs:extension base="NonOptionPF">
+				<xs:sequence>
+					<xs:element ref="country"/>
+					<xs:element name="debt" type="Debt" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EquityPf">
+		<xs:annotation>
+			<xs:documentation>Equity Product Family</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="NonOptionPF">
+				<xs:sequence>
+					<xs:element ref="country"/>
+					<xs:element name="equity" type="Equity" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FutPf">
+		<xs:annotation>
+			<xs:documentation>Futures Product Family</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="NonOptionPF">
+				<xs:sequence>
+					<xs:element ref="undPf"/>
+					<xs:element name="fut" type="Fut" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FwdPf">
+		<xs:complexContent>
+			<xs:extension base="NonOptionPF">
+				<xs:sequence>
+					<xs:element ref="undPf"/>
+					<xs:element name="fwd" type="Fwd" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IRSwapPf">
+		<xs:complexContent>
+			<xs:extension base="NonOptionPF">
+				<xs:sequence>
+				    <xs:element name="zeroCurveId" type="xs:int" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="floatLeg" type="IRSwapPfLeg"/>
+					<xs:element name="fixedLeg" type="IRSwapPfLeg"/>
+					<xs:element name="IRSwap" type="IRSwap" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IRSwapPfLeg">
+		<xs:sequence>
+			<xs:element ref="currency" minOccurs="0"/>
+			<xs:element ref="payFreq"/>
+			<xs:element ref="calcFreq"/>
+			<xs:element ref="index" minOccurs="0"/>
+			<xs:element ref="indexTenor" minOccurs="0"/>
+			<xs:element name="dCurveId" type="xs:int"/>
+			<xs:element name="fCurveId" type="xs:int" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="payFreq" type="xs:string"/>
+	<xs:element name="index" type="xs:string"/>
+	<xs:element name="indexTenor" type="xs:string"/>
+	<xs:element name="calcFreq" type="xs:string"/>
+	<xs:complexType name="IRSwap">
+		<xs:complexContent>
+			<xs:extension base="NonOptionContract">
+				<xs:sequence>
+					<xs:element name="floatLeg" type="IRSwapLeg"/>
+					<xs:element name="fixedLeg" type="IRSwapLeg"/>
+					<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SP">
+		<xs:sequence>
+			<xs:element ref="exch"/>
+			<xs:element ref="pfId"/>
+			<xs:element ref="cId"/>
+			<xs:element name="floatLeg" type="IRSwapLeg"/>
+			<xs:element name="fixedLeg" type="IRSwapLeg"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IRSwapLeg">
+		<xs:sequence>
+			<xs:element ref="currency" minOccurs="0"/>
+			<xs:element name="startDate" type="xs:string"/>
+			<xs:element name="matDate" type="xs:string"/>
+			<xs:element name="matAdjBusDayConv" type="xs:string" minOccurs="0"/>
+			<xs:element name="matDateAdjCal" type="IrsCal"/>
+			<xs:element name="notional" type="xs:double" minOccurs="0"/>
+			<xs:element name="rollConv" type="xs:string"/>
+			<xs:element name="fixedRate" type="xs:double" minOccurs="0"/>
+			<xs:element ref="payFreq" minOccurs="0"/>
+			<xs:element name="payRelTo" type="xs:string"/>
+			<xs:element name="payAdjBusDayConv" type="xs:string"/>
+			<xs:element name="payAdjCal" type="IrsCal"/>
+			<xs:element name="dayCount" type="xs:string"/>
+			<xs:element ref="index" minOccurs="0"/>
+			<xs:element ref="indexTenor" minOccurs="0"/>
+			<xs:element name="spread" type="xs:double" minOccurs="0"/>
+			<xs:element name="calcPerAdjBusDayConv" type="xs:string"/>
+			<xs:element name="calcPerAdjCal" type="IrsCal"/>
+			<xs:element ref="calcFreq" minOccurs="0"/>
+			<xs:element name="compMethod" type="xs:string"/>
+			<xs:element name="fixingDateOffset" type="xs:string" minOccurs="0"/>
+			<xs:element name="fixingDayType" type="xs:string" minOccurs="0"/>
+			<xs:element name="fixingDateBusDayConv" type="xs:string" minOccurs="0"/>
+			<xs:element name="fixingDateCal" type="IrsCal" minOccurs="0"/>
+			<xs:element name="resetFreq" type="xs:string" minOccurs="0"/>
+			<xs:element name="resetRelTo" type="xs:string" minOccurs="0"/>
+			<xs:element name="resetDateAdjDayConv" type="xs:string" minOccurs="0"/>
+			<xs:element name="resetDateAdjCal" type="IrsCal" minOccurs="0"/>
+			<xs:element name="currentPeriodRate" type="xs:double" minOccurs="0"/>
+			<xs:element name="accruedInt" type="xs:double" minOccurs="0"/>
+			<xs:element name="initialStub" type="InitialStub" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IrsCal">
+		<xs:sequence>
+			<xs:element name="calCode" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InitialStub">
+		<xs:sequence>
+			<xs:element name="firstRegPerStartDate" type="xs:string"/>
+			<xs:element name="rate" type="xs:double"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CDSwapPf">
+		<xs:sequence>
+			<xs:element ref="pfId"/>
+			<xs:element ref="pfCode"/>
+			<xs:element name="CDSubType" type="xs:string"/>
+			<xs:element name="CDSIsIG" type="xs:string" minOccurs="0"/>
+			<xs:element ref="domain" minOccurs="0"/>
+			<xs:element ref="specs" minOccurs="0"/>
+			<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="alias" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="name" minOccurs="0"/>
+			<xs:element ref="currency"/>
+			<xs:element ref="contractSize" minOccurs="0"/>
+			<xs:element ref="uomQty" minOccurs="0"/>
+			<xs:element ref="uom" minOccurs="0"/>
+			<xs:element ref="cvf" minOccurs="0"/>
+			<xs:element ref="eqPosFactor" minOccurs="0"/>
+			<xs:element ref="notionAmt" minOccurs="0"/>
+			<xs:element ref="priceDl" minOccurs="0"/>
+			<xs:element ref="priceFmt" minOccurs="0"/>
+			<xs:element ref="couponDl" minOccurs="0"/>
+			<xs:element ref="runSpreadDl" minOccurs="0"/>
+			<xs:element ref="sector" minOccurs="0"/>
+			<xs:element name="bidAskSprd" type="xs:double" minOccurs="0"/>
+			<xs:element name="pv01" type="xs:double" minOccurs="0"/>
+			<xs:element ref="recoveryRate" minOccurs="0"/>
+			<xs:element ref="valueMeth"/>
+			<xs:element ref="priceMeth" minOccurs="0"/>
+			<xs:element ref="setlMeth" minOccurs="0"/>
+			<xs:element ref="useOTCRounding" minOccurs="0"/>
+			<xs:element ref="positionsAllowed" minOccurs="0"/>
+			<xs:element ref="undPf" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CDSwap" type="CDSwap" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EDebtPf">
+		<xs:complexContent>
+			<xs:extension base="NonOptionPF">
+				<xs:sequence>
+					<xs:element ref="country"/>
+					<xs:element ref="undPf"/>
+					<xs:element name="eDebt" type="EDebt" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CmbPf">
+		<xs:complexContent>
+			<xs:extension base="NonOptionPF">
+				<xs:sequence>
+					<xs:element ref="undPf" minOccurs="1" maxOccurs="unbounded"/>
+					<xs:element name="cmb" type="Cmb" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Contract" abstract="true">
+		<xs:sequence>
+			<xs:element ref="cId"/>
+			<xs:element ref="alias" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NonOptionContract" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="Contract">
+				<xs:sequence>
+					<xs:element ref="pe"/>
+					<xs:element ref="p" minOccurs="0"/>
+					<xs:element ref="priceType" minOccurs="0"/>
+					<xs:element ref="dvas" minOccurs="0"/>
+					<xs:element ref="d" minOccurs="0"/>
+					<xs:element ref="v" minOccurs="0"/>
+					<xs:element ref="volType" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="val" minOccurs="0"/>
+					<xs:element ref="sc" minOccurs="0"/>
+					<xs:element ref="setlDate" minOccurs="0"/>
+					<xs:element ref="t" minOccurs="0"/>
+					<xs:element ref="fdot" minOccurs="0"/>
+					<xs:element ref="ldot" minOccurs="0"/>
+					<xs:element ref="fDeliv" minOccurs="0"/>
+					<xs:element ref="lDeliv" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Phy">
+		<xs:complexContent>
+			<xs:extension base="Contract">
+				<xs:sequence>
+					<xs:element ref="pe" minOccurs="0"/>
+					<xs:element ref="p" minOccurs="0"/>
+					<xs:element ref="priceType" minOccurs="0"/>
+					<xs:element ref="d" minOccurs="0"/>
+					<xs:element ref="v" minOccurs="0"/>
+					<xs:element ref="volType" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="val" minOccurs="0"/>
+					<xs:element ref="sc" minOccurs="0"/>
+					<xs:element ref="haircut" minOccurs="0"/>
+					<xs:element ref="haircutRsv" minOccurs="0"/>
+					<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Debt">
+		<xs:complexContent>
+			<xs:extension base="Contract">
+				<xs:sequence>
+					<xs:choice>
+						<xs:choice>
+							<xs:element ref="cusip"/>
+							<xs:element ref="isin"/>
+						</xs:choice>
+					</xs:choice>
+					<xs:element ref="pe" minOccurs="0"/>
+					<xs:element ref="p" minOccurs="0"/>
+					<xs:element ref="priceType" minOccurs="0"/>
+					<xs:element ref="d" minOccurs="0"/>
+					<xs:element ref="v" minOccurs="0"/>
+					<xs:element ref="volType" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="val" minOccurs="0"/>
+					<xs:element ref="sc" minOccurs="0"/>
+					<xs:element ref="desc" minOccurs="0"/>
+					<xs:element ref="type" minOccurs="0"/>
+					<xs:element ref="subType" minOccurs="0"/>
+					<xs:element ref="setlDate" minOccurs="0"/>
+					<xs:element ref="cpnRate" minOccurs="0"/>
+					<xs:element ref="cpnFreq" minOccurs="0"/>
+					<xs:element ref="cpnNextDate" minOccurs="0"/>
+					<xs:element ref="cpnLastDate" minOccurs="0"/>
+					<xs:element ref="accruedIntr"/>
+					<xs:element ref="duration" minOccurs="0"/>
+					<xs:element ref="lbe" minOccurs="0"/>
+					<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Equity">
+		<xs:annotation>
+			<xs:documentation>Equity contract</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Contract">
+				<xs:sequence>
+					<xs:choice>
+						<xs:choice>
+							<xs:element ref="cusip"/>
+							<xs:element ref="isin"/>
+						</xs:choice>
+					</xs:choice>
+					<xs:element ref="pe" minOccurs="0"/>
+					<xs:element ref="p" minOccurs="0"/>
+					<xs:element ref="priceType" minOccurs="0"/>
+					<xs:element ref="d" minOccurs="0"/>
+					<xs:element ref="v" minOccurs="0"/>
+					<xs:element ref="volType" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="val" minOccurs="0"/>
+					<xs:element ref="sc" minOccurs="0"/>
+					<xs:element ref="desc" minOccurs="0"/>
+					<xs:element ref="type" minOccurs="0"/>
+					<xs:element ref="subType" minOccurs="0"/>
+					<xs:element ref="divRate" minOccurs="0"/>
+					<xs:element ref="haircut" minOccurs="0"/>
+					<xs:element ref="haircutRsv" minOccurs="0"/>
+					<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Fut">
+		<xs:complexContent>
+			<xs:extension base="NonOptionContract">
+				<xs:sequence>
+					<xs:element ref="undC"/>
+					<xs:element ref="sprCharge" minOccurs="0"/>
+					<xs:element ref="intrRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Fwd">
+		<xs:complexContent>
+			<xs:extension base="Contract">
+				<xs:sequence>
+					<xs:element ref="pe"/>
+					<xs:element ref="p" minOccurs="0"/>
+					<xs:element ref="priceType" minOccurs="0"/>
+					<xs:element ref="dvas" minOccurs="0"/>
+					<xs:element ref="d" minOccurs="0"/>
+					<xs:element ref="v" minOccurs="0"/>
+					<xs:element ref="volType" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="discFactor" minOccurs="0"/>
+					<xs:element ref="val" minOccurs="0"/>
+					<xs:element ref="sc" minOccurs="0"/>
+					<xs:element ref="setlDate" minOccurs="0"/>
+					<xs:element ref="t" minOccurs="0"/>
+					<xs:element ref="fdot" minOccurs="0"/>
+					<xs:element ref="ldot" minOccurs="0"/>
+					<xs:element ref="fDeliv" minOccurs="0"/>
+					<xs:element ref="lDeliv" minOccurs="0"/>
+					<xs:element ref="undC"/>
+					<xs:element ref="sprCharge" minOccurs="0"/>
+					<xs:element ref="intrRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CDSwap">
+		<xs:complexContent>
+			<xs:extension base="Contract">
+				<xs:sequence>
+					<xs:element ref="pe"/>
+					<xs:element ref="coupon"/>
+					<xs:element ref="p" minOccurs="0"/>
+					<xs:element ref="runSpread" minOccurs="0"/>
+					<xs:element ref="priceType" minOccurs="0"/>
+					<xs:element ref="dvas" minOccurs="0"/>
+					<xs:element ref="d" minOccurs="0"/>
+					<xs:element ref="v" minOccurs="0"/>
+					<xs:element ref="volType" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="val" minOccurs="0"/>
+					<xs:element ref="sc" minOccurs="0"/>
+					<xs:element ref="setlDate" minOccurs="0"/>
+					<xs:element ref="t" minOccurs="0"/>
+					<xs:element ref="fdot" minOccurs="0"/>
+					<xs:element ref="ldot" minOccurs="0"/>
+					<xs:element ref="fDeliv" minOccurs="0"/>
+					<xs:element ref="lDeliv" minOccurs="0"/>
+					<xs:element ref="undC" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="sprCharge" minOccurs="0"/>
+					<xs:element ref="intrRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EDebt">
+		<xs:complexContent>
+			<xs:extension base="Contract">
+				<xs:sequence>
+					<xs:choice>
+						<xs:choice>
+							<xs:element ref="cusip"/>
+							<xs:element ref="isin"/>
+						</xs:choice>
+					</xs:choice>
+					<xs:element ref="pe" minOccurs="0"/>
+					<xs:element ref="p" minOccurs="0"/>
+					<xs:element ref="priceType" minOccurs="0"/>
+					<xs:element ref="d" minOccurs="0"/>
+					<xs:element ref="v" minOccurs="0"/>
+					<xs:element ref="volType" minOccurs="0"/>
+					<xs:element ref="cvf" minOccurs="0"/>
+					<xs:element ref="val" minOccurs="0"/>
+					<xs:element ref="sc" minOccurs="0"/>
+					<xs:element ref="desc" minOccurs="0"/>
+					<xs:element ref="type" minOccurs="0"/>
+					<xs:element ref="subType" minOccurs="0"/>
+					<xs:element ref="setlDate" minOccurs="0"/>
+					<xs:element ref="cpnRate" minOccurs="0"/>
+					<xs:element ref="cpnFreq" minOccurs="0"/>
+					<xs:element ref="cpnNextDate" minOccurs="0"/>
+					<xs:element ref="cpnLastDate" minOccurs="0"/>
+					<xs:element ref="accruedIntr"/>
+					<xs:element ref="duration" minOccurs="0"/>
+					<xs:element ref="lbe" minOccurs="0"/>
+					<xs:element ref="futEqFactor"/>
+					<xs:element ref="undC" maxOccurs="unbounded"/>
+					<xs:element ref="tick" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="venue" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Cmb">
+		<xs:complexContent>
+			<xs:extension base="NonOptionContract">
+				<xs:sequence>
+					<xs:element ref="undC" maxOccurs="unbounded"/>
+					<xs:element ref="sprCharge" minOccurs="0"/>
+					<xs:element ref="scanRate" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="ra" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Position" abstract="true">
+		<xs:sequence>
+			<xs:element ref="exch"/>
+			<xs:element ref="pfId"/>
+			<xs:element ref="cId"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Asset">
+		<xs:complexContent>
+			<xs:extension base="Position">
+				<xs:sequence>
+					<xs:element ref="net"/>
+					<xs:element ref="savings" minOccurs="0"/>
+					<xs:element ref="pbValue" minOccurs="0"/>
+					<xs:element ref="used" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Requirement" abstract="true">
+		<xs:sequence>
+			<xs:element ref="isM"/>
+			<xs:element ref="pbc"/>
+			<xs:element ref="spanReq"/>
+			<xs:element ref="addlReq" minOccurs="0"/>
+			<xs:element ref="anov" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NetPosition">
+		<xs:annotation>
+			<xs:documentation>Net Position - a position in a portfolio being margined on a net basis</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Position">
+				<xs:sequence>
+					<xs:element ref="net"/>
+					<xs:element ref="equiv" minOccurs="0"/>
+					<xs:element ref="split" minOccurs="0"/>
+					<xs:element ref="ots" minOccurs="0"/>
+					<xs:element ref="aots" minOccurs="0"/>
+					<xs:element ref="sv" minOccurs="0"/>
+					<xs:element ref="svt" minOccurs="0"/>
+					<xs:element ref="ote" minOccurs="0"/>
+					<xs:element ref="pl" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NetClearingPosition">
+		<xs:complexContent>
+			<xs:extension base="Position">
+				<xs:sequence>
+					<xs:element ref="net"/>
+					<xs:element ref="equiv" minOccurs="0"/>
+					<xs:element ref="split" minOccurs="0"/>
+					<xs:element ref="sv" minOccurs="0"/>
+					<xs:element ref="svt" minOccurs="0"/>
+					<xs:element ref="ote" minOccurs="0"/>
+					<xs:element ref="pl" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EquivalentDebtPosition">
+		<xs:annotation>
+			<xs:documentation>Equivalent Debt Position </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Position">
+				<xs:sequence>
+					<xs:element ref="no"/>
+					<xs:element ref="nrps"/>
+					<xs:element ref="nrpn"/>
+					<xs:element ref="sv" minOccurs="0"/>
+					<xs:element ref="svt" minOccurs="0"/>
+					<xs:element ref="ote" minOccurs="0"/>
+					<xs:element ref="pl" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GrossPosition">
+		<xs:complexContent>
+			<xs:extension base="Position">
+				<xs:sequence>
+					<xs:element ref="long"/>
+					<xs:element ref="short"/>
+					<xs:element ref="nl" minOccurs="0"/>
+					<xs:element ref="ns" minOccurs="0"/>
+					<xs:element ref="nlEquiv" minOccurs="0"/>
+					<xs:element ref="nsEquiv" minOccurs="0"/>
+					<xs:element ref="nlSplit" minOccurs="0"/>
+					<xs:element ref="nsSplit" minOccurs="0"/>
+					<xs:element ref="ots" minOccurs="0"/>
+					<xs:element ref="otss" minOccurs="0"/>
+					<xs:element ref="aots" minOccurs="0"/>
+					<xs:element ref="sv" minOccurs="0"/>
+					<xs:element ref="svt" minOccurs="0"/>
+					<xs:element ref="ote" minOccurs="0"/>
+					<xs:element ref="pl" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GrossClearingPosition">
+		<xs:complexContent>
+			<xs:extension base="Position">
+				<xs:sequence>
+					<xs:element ref="long"/>
+					<xs:element ref="short"/>
+					<xs:element ref="iaLong" minOccurs="0"/>
+					<xs:element ref="iaShort" minOccurs="0"/>
+					<xs:element ref="ialEquiv" minOccurs="0"/>
+					<xs:element ref="iasEquiv" minOccurs="0"/>
+					<xs:element ref="ialSplit" minOccurs="0"/>
+					<xs:element ref="iasSplit" minOccurs="0"/>
+					<xs:element ref="ieLong" minOccurs="0"/>
+					<xs:element ref="ieShort" minOccurs="0"/>
+					<xs:element ref="ielEquiv" minOccurs="0"/>
+					<xs:element ref="iesEquiv" minOccurs="0"/>
+					<xs:element ref="ielSplit" minOccurs="0"/>
+					<xs:element ref="iesSplit" minOccurs="0"/>
+					<xs:element ref="nl" minOccurs="0"/>
+					<xs:element ref="ns" minOccurs="0"/>
+					<xs:element ref="nlEquiv" minOccurs="0"/>
+					<xs:element ref="nsEquiv" minOccurs="0"/>
+					<xs:element ref="nlSplit" minOccurs="0"/>
+					<xs:element ref="nsSplit" minOccurs="0"/>
+					<xs:element ref="sv" minOccurs="0"/>
+					<xs:element ref="svt" minOccurs="0"/>
+					<xs:element ref="ote" minOccurs="0"/>
+					<xs:element ref="pl" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LinkedAccts"/>
+	<xs:simpleType name="PeriodCode">
+		<xs:annotation>
+			<xs:documentation>Period code. It must begin with a four-digit year and continue with a two-digit month. Optionally, it may continue with: - two zeros - W1 through W5 (week one, week two, etc.) - a specific day of the month, or ( - some other two-byte code, for example SD for short-dated. A ninth byte may be added to make the period code more specific than the day. A period code of 000000 may also be used to identify the period for physicals and/or options on physicals</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{6}\w{0,3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IsoCurrencyCode">
+		<xs:annotation>
+			<xs:documentation>3-byte ISO code for the currency. Unique identifier (e.g. USD). </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\w{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SetlQualifier">
+		<xs:annotation>
+			<xs:documentation>Optional qualifier if type is settle</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="final"/>
+			<xs:enumeration value="early"/>
+			<xs:enumeration value="complete"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LegPriceFlag">
+		<xs:annotation>
+			<xs:documentation>Indicates whether leg-price information is available for the current day</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="N"/>
+			<xs:enumeration value="L"/>
+			<xs:enumeration value="S+"/>
+			<xs:enumeration value="S-"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DefType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="CustPortUseLov">
+		<xs:annotation>
+			<xs:documentation>Customer Clearing Portfolio Use Long Option Value Flag. Applies only to calculations for clearing-level customer-origin portfolios. Added for the Common Clearing Link for support specification of whether CBOT positions in customer-origin clearing portfolios should be margined net but without use of Long Option Value, or according to submitted spreads and with full use of Long Option Value. Values are: 0 - CBT-style customer-origin margining without use of LOV; 1 -  CME-style customer-origin margining with full use of LOV; 2 - partial./>
+</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:nonNegativeInteger">
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CreditDistMeth">
+		<xs:annotation>
+			<xs:documentation>Values: PROP (default) – credit is distributed between accounts proportionally to margin requirements; EQUIV – credit is distributed equally among accounts; PARENT – credit stays in “parent” account; CHILD_EQ – credit is distributed equally between “child” accounts; CHILD_PROP – credit is distributed between “child” accounts proportionally to margin requirements</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PROP"/>
+			<xs:enumeration value="EQUIV"/>
+			<xs:enumeration value="PARENT"/>
+			<xs:enumeration value="CHILD_EQ"/>
+			<xs:enumeration value="CHILD_PROP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BusFuncType">
+		<xs:annotation>
+			<xs:documentation>Business function type. Enumerated: CLR - normal clearing; MBR - member clearing; XM - cross-margin agreement; MOS - mutual offset agreement</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CLR"/>
+			<xs:enumeration value="MBR"/>
+			<xs:enumeration value="XM"/>
+			<xs:enumeration value="MOS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ChargeMeth">
+		<xs:annotation>
+			<xs:documentation>Charge calculation method: 'F' for the flat-rate processing; 'P' for the per-month per-spread variant of flat-rate processing; 'W'  for the weighted price risk method</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="F"/>
+			<xs:enumeration value="P"/>
+			<xs:enumeration value="W"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SpreadType">
+		<xs:annotation>
+			<xs:documentation>Setting ‘DELATVOL’ will indicate that this spread in addition to delta offsets will provide simple volatility offsets.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="DEFAULT"/>
+			<xs:enumeration value="DELATVOL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CmbMeth">
+		<xs:annotation>
+			<xs:documentation>Combination margining method</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SPLIT"/>
+			<xs:enumeration value="DELTASPLIT"/>
+			<xs:enumeration value="NONE"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
