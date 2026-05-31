@@ -37,6 +37,9 @@ class ExposureConfig:
     # Use adhoc_default for an across-the-board add-on, or per-symbol via adhoc.
     adhoc_default: float = 0.0
     adhoc: Dict[str, float] = None  # type: ignore
+    # Additional ELM levied on SHORT option positions on their EXPIRY DAY
+    # (tail-risk add-on; a fraction of notional). Set 0 to disable.
+    expiry_day_elm_pct: float = 0.02
     index_symbols: tuple = (
         "NIFTY",
         "BANKNIFTY",

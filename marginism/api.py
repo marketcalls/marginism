@@ -131,9 +131,10 @@ class RiskEngine:
     @staticmethod
     def _split(result):
         """Map a MarginResult to (span, exposure, option_premium, additional)."""
-        span = result.marginism
+        span = result.span_margin
         exposure = result.exposure_margin
-        additional = result.adhoc_margin
+        # adhoc + expiry-day ELM both reported under `additional`
+        additional = result.adhoc_margin + result.expiry_day_elm
         # premium *payable* only for net-long options (a debit, not margin)
         option_premium = max(0.0, result.net_option_value)
         return span, exposure, option_premium, additional
@@ -142,8 +143,13 @@ class RiskEngine:
         self,
         orders: List[Dict[str, Any]],
         consider_positions: bool = True,
+        as_of_date: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Consolidated basket margin with hedging benefit (1..N legs)."""
+        """Consolidated basket margin with hedging benefit (1..N legs).
+
+        ``as_of_date`` (trading date) drives the expiry-day ELM add-on; it
+        defaults to the SPAN file's business date.
+        """
         positions: List[Position] = []
         leg_blocks: List[Dict[str, Any]] = []
 
@@ -152,7 +158,7 @@ class RiskEngine:
         for order in orders:
             pos = self._to_position(order)
             positions.append(pos)
-            r = self.calc.calculate([pos])
+            r = self.calc.calculate([pos], as_of_date=as_of_date)
             span, exposure, prem, add = self._split(r)
             # per-order: a long option's "total" is its premium payable
             total = span + exposure + add + prem
@@ -162,7 +168,7 @@ class RiskEngine:
             sum_margin_only += span + exposure + add
 
         # ---- consolidated basket (with hedging benefit) -> final -----
-        R = self.calc.calculate(positions)
+        R = self.calc.calculate(positions, as_of_date=as_of_date)
         c_span, c_exp, c_prem, c_add = self._split(R)
         # Basket margin = SPAN + exposure + additional. Long-option premium is
         # already netted into SPAN via -NOV (matches the broker basket total);
@@ -185,12 +191,14 @@ class RiskEngine:
             },
         }
 
-    def orders(self, orders: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def orders(
+        self, orders: List[Dict[str, Any]], as_of_date: Optional[str] = None
+    ) -> Dict[str, Any]:
         """Per-order margins, no netting (each leg standalone)."""
         out = []
         for order in orders:
             pos = self._to_position(order)
-            r = self.calc.calculate([pos])
+            r = self.calc.calculate([pos], as_of_date=as_of_date)
             span, exposure, prem, add = self._split(r)
             total = span + exposure + add + prem
             out.append(_leg_block(self._label(order), order.get("exchange", "NFO"),

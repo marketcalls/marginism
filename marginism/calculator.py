@@ -9,7 +9,7 @@ from .algorithm import CommodityResult, ResolvedPosition, compute_commodity
 from .exposure import ExposureConfig
 from .model import OptionContract, SpanFile
 from .parser import parse_spn
-from .portfolio import Position
+from .portfolio import Position, normalize_expiry
 
 
 @dataclass
@@ -25,9 +25,10 @@ class PositionResult:
 class MarginResult:
     """Full margin breakdown for a portfolio."""
 
-    marginism: float = 0.0
+    span_margin: float = 0.0
     exposure_margin: float = 0.0
     adhoc_margin: float = 0.0
+    expiry_day_elm: float = 0.0   # extra ELM on short options expiring today
     net_option_value: float = 0.0
     by_commodity: Dict[str, CommodityResult] = field(default_factory=dict)
     positions: List[PositionResult] = field(default_factory=list)
@@ -35,21 +36,24 @@ class MarginResult:
 
     @property
     def total_margin(self) -> float:
-        """Upfront initial margin = SPAN + Exposure + Adhoc.
+        """Upfront initial margin = SPAN + Exposure + Adhoc + expiry-day ELM.
 
         Premium for long options is collected separately, not part of margin.
         """
-        return self.marginism + self.exposure_margin + self.adhoc_margin
+        return (self.span_margin + self.exposure_margin + self.adhoc_margin
+                + self.expiry_day_elm)
 
     def summary(self) -> str:
         lines = [
             "SPAN Margin Summary",
             "=" * 52,
-            f"  SPAN margin      : {self.marginism:>16,.2f}",
+            f"  SPAN margin      : {self.span_margin:>16,.2f}",
             f"  Exposure margin  : {self.exposure_margin:>16,.2f}",
         ]
         if self.adhoc_margin:
             lines.append(f"  Adhoc margin     : {self.adhoc_margin:>16,.2f}")
+        if self.expiry_day_elm:
+            lines.append(f"  Expiry-day ELM   : {self.expiry_day_elm:>16,.2f}")
         lines += [
             f"  {'-'*46}",
             f"  Total margin     : {self.total_margin:>16,.2f}",
@@ -141,9 +145,21 @@ class SpanCalculator:
 
         return None, f"unsupported instrument {position.instrument}"
 
-    def calculate(self, positions: List[Position]) -> MarginResult:
+    def calculate(
+        self, positions: List[Position], as_of_date: Optional[str] = None
+    ) -> MarginResult:
+        """Compute margins for a list of positions.
+
+        ``as_of_date`` is the trading date used to detect options expiring
+        *today* (which attract an extra expiry-day ELM on short positions).
+        It accepts any common date format; if omitted it defaults to the SPAN
+        file's business date — so loading the expiry-day file applies the
+        add-on automatically. Set ``ExposureConfig.expiry_day_elm_pct = 0`` to
+        disable.
+        """
         result = MarginResult()
         by_cmty: Dict[str, List[ResolvedPosition]] = {}
+        today = normalize_expiry(as_of_date) if as_of_date else self.span_file.business_date
 
         for pos in positions:
             contract, note = self._resolve(pos)
@@ -181,12 +197,18 @@ class SpanCalculator:
                 rate = self.exposure.rate(pos.symbol, is_option=pos.is_option)
                 result.exposure_margin += rate * notional
                 result.adhoc_margin += self.exposure.adhoc_rate(pos.symbol) * notional
+                # Extra ELM on a SHORT option that expires on the trading date.
+                if (pos.is_option and qty < 0 and today
+                        and pos.expiry == today):
+                    result.expiry_day_elm += (
+                        self.exposure.expiry_day_elm_pct * notional
+                    )
 
         for sym, resolved in by_cmty.items():
             cmty = self.span_file.get(sym)
             cres = compute_commodity(cmty, resolved)
             result.by_commodity[sym] = cres
-            result.marginism += cres.span_risk
+            result.span_margin += cres.span_risk
             result.net_option_value += cres.net_option_value
 
         return result

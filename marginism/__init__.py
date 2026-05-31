@@ -34,7 +34,7 @@ from .portfolio import Position, normalize_expiry
 from .api import RiskEngine
 from .symbols import SymbolResolver, build_symbol_index
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "SpanCalculator",

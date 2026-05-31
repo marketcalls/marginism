@@ -151,6 +151,11 @@ python -m marginism <file.spn> \
   risk array still participates in the portfolio scan so hedges net correctly.
 * `net_option_value` is the mark-to-market value of option legs (premium):
   negative when net short (premium received), positive when net long.
+* **Expiry-day ELM**: an extra ELM (default 2%, `ExposureConfig.expiry_day_elm_pct`)
+  is added on **short options that expire on the trading date**. The trading date
+  defaults to the SPAN file's business date; override with
+  `calculate(..., as_of_date=...)` / `basket(..., as_of_date=...)`. Reported under
+  `additional`. Set the rate to `0` to disable.
 
 ## Module map
 

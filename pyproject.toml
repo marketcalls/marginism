@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "marginism"
-version = "0.1.0"
+version = "0.1.1"
 description = "NSE/NSCCL SPAN margin calculator from CME-SPAN .spn files, with an order-basket margins API"
 readme = "marginism/README.md"
 requires-python = ">=3.8"
