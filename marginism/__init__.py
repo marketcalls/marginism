@@ -33,10 +33,32 @@ from .parser import parse_spn
 from .portfolio import Position, normalize_expiry
 from .api import RiskEngine
 from .symbols import SymbolResolver, build_symbol_index
+from .segments import (
+    SpanSegment,
+    SEGMENTS,
+    DEFAULT_SEGMENT,
+    NSE_SUFFIXES,
+    BFO_SUFFIXES,
+    MCX_SUFFIXES,
+    get_segment,
+)
+from .instruments import InstrumentDB, InstrumentInfo
+from .downloader import (
+    download_file,
+    download_span_file,
+    download_latest_span_file,
+    download_exposure_file,
+    download_mcx_daily_margin_file,
+    extract_zip,
+    find_local_span_file,
+    find_local_exposure_file,
+    find_local_mcx_daily_margin_file,
+)
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 __all__ = [
+    # --- core SPAN calculator ---
     "SpanCalculator",
     "MarginResult",
     "PositionResult",
@@ -58,5 +80,26 @@ __all__ = [
     "compute_commodity",
     "parse_spn",
     "normalize_expiry",
+    # --- exchange segment registry ---
+    "SpanSegment",
+    "SEGMENTS",
+    "DEFAULT_SEGMENT",
+    "NSE_SUFFIXES",
+    "BFO_SUFFIXES",
+    "MCX_SUFFIXES",
+    "get_segment",
+    # --- instrument catalog ---
+    "InstrumentDB",
+    "InstrumentInfo",
+    # --- downloader ---
+    "download_file",
+    "download_span_file",
+    "download_latest_span_file",
+    "download_exposure_file",
+    "download_mcx_daily_margin_file",
+    "extract_zip",
+    "find_local_span_file",
+    "find_local_exposure_file",
+    "find_local_mcx_daily_margin_file",
     "__version__",
 ]

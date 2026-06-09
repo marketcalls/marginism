@@ -230,7 +230,10 @@ def parse_spn(
             if keep(code):
                 futures.setdefault(code, []).extend(_parse_futpf(el))
             el.clear()
-        elif tag == "oopPf":
+        elif tag in ("oopPf", "oofPf"):
+            # oopPf — options on physical/index (NSE/BSE)
+            # oofPf — options on futures (MCX RPF format)
+            # Both have the same series → opt → ra structure.
             code = _text(el.find("pfCode"))
             if keep(code):
                 options.setdefault(code, []).extend(_parse_ooppf(el))
