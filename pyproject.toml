@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "marginism"
-version = "0.1.1"
-description = "NSE/NSCCL SPAN margin calculator from CME-SPAN .spn files, with an order-basket margins API"
+version = "0.2.0"
+description = "NSE/BSE/MCX SPAN margin calculator — auto-downloads SPAN files, parses all exchanges, computes margins from CME-SPAN .spn files"
 readme = "marginism/README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
 authors = [{ name = "marginism" }]
-keywords = ["span", "margin", "nse", "nfo", "cds", "mcx", "options", "futures", "derivatives"]
-dependencies = []   # pure standard library — no third-party deps, runs offline
+keywords = ["span", "margin", "nse", "nfo", "bse", "bfo", "mcx", "cds", "options", "futures", "derivatives"]
+dependencies = []   # pure standard library — no third-party deps, works offline
 
 [project.optional-dependencies]
 dev = ["pytest>=7"]
