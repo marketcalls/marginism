@@ -42,7 +42,12 @@ from .segments import (
     MCX_SUFFIXES,
     get_segment,
 )
-from .instruments import InstrumentDB, InstrumentInfo
+from .instruments import (
+    InstrumentDB,
+    InstrumentInfo,
+    KITE_INSTRUMENTS_URL,
+    GROWW_INSTRUMENTS_URL,
+)
 from .downloader import (
     download_file,
     download_span_file,
@@ -93,6 +98,8 @@ __all__ = [
     # --- instrument catalog ---
     "InstrumentDB",
     "InstrumentInfo",
+    "KITE_INSTRUMENTS_URL",
+    "GROWW_INSTRUMENTS_URL",
     # --- downloader ---
     "download_file",
     "download_span_file",
