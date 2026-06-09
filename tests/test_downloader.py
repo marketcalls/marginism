@@ -505,3 +505,344 @@ class TestFindLocalMcxDailyMarginFile:
             date=datetime(2026, 6, 8), data_dir=tmp_path
         )
         assert result is None
+
+
+# ---------------------------------------------------------------------------
+# _suffixes_for_mode
+# ---------------------------------------------------------------------------
+
+
+class TestSuffixesForMode:
+    def test_use_first_false_returns_all_suffixes(self):
+        seg = get_segment("NFO")
+        result = dl._suffixes_for_mode(seg, use_first=False)
+        assert result == seg.suffixes
+        assert result[0] == "s"       # newest first
+        assert result[-1] == "i1"     # oldest last
+
+    def test_use_first_true_returns_only_earliest(self):
+        seg = get_segment("NFO")
+        result = dl._suffixes_for_mode(seg, use_first=True)
+        assert result == ("i1",)
+
+    def test_use_first_true_mcx_returns_first_rpf(self):
+        seg = get_segment("MCX")
+        result = dl._suffixes_for_mode(seg, use_first=True)
+        assert result == ("0106-01",)
+
+    def test_use_first_true_bfo_returns_base_snapshot(self):
+        seg = get_segment("BFO")
+        result = dl._suffixes_for_mode(seg, use_first=True)
+        assert result == ("00",)
+
+    def test_use_first_true_cds_returns_i1(self):
+        seg = get_segment("CDS")
+        result = dl._suffixes_for_mode(seg, use_first=True)
+        assert result == ("i1",)
+
+    def test_single_suffix_segment_unaffected_by_use_first(self):
+        """BCD has only ('00',); use_first=True should not change anything."""
+        seg = get_segment("BCD")
+        # only one suffix → use_first has no effect
+        assert len(seg.suffixes) == 1
+        assert dl._suffixes_for_mode(seg, use_first=True) == seg.suffixes
+        assert dl._suffixes_for_mode(seg, use_first=False) == seg.suffixes
+
+
+# ---------------------------------------------------------------------------
+# download_latest_span_file with use_first
+# ---------------------------------------------------------------------------
+
+
+class TestDownloadLatestSpanFileWithUseFirst:
+    def test_use_first_only_tries_earliest_suffix(self, tmp_path):
+        """With use_first=True only the first-of-day suffix is attempted."""
+        seg = get_segment("NFO")
+        zip_bytes = _make_zip(b"<spanFile/>", "nsccl.20250808.i01.spn")
+        called = []
+
+        def fake_urlopen(req, timeout=None):
+            url = req.full_url
+            called.append(url)
+            if "i1.zip" in url:
+                return _FakeHTTPResponse(zip_bytes)
+            raise Exception("not available")
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            path, suffix = dl.download_latest_span_file(
+                date=datetime(2025, 8, 8),
+                segment=seg,
+                data_dir=tmp_path,
+                use_first=True,
+            )
+
+        assert suffix == "i1"
+        assert path is not None
+        # Only ONE URL should have been tried
+        assert len(called) == 1
+        assert "i1.zip" in called[0]
+        # Settlement file must NOT have been attempted
+        assert not any("s.zip" in u for u in called)
+
+    def test_use_first_false_tries_settlement_first(self, tmp_path):
+        """Default (use_first=False): settlement 's' is the first URL tried."""
+        seg = get_segment("NFO")
+        zip_bytes = _make_zip(b"<spanFile/>", "nsccl.20250808.s.spn")
+        called = []
+
+        def fake_urlopen(req, timeout=None):
+            called.append(req.full_url)
+            if called[-1].endswith(".s.zip"):
+                return _FakeHTTPResponse(zip_bytes)
+            raise Exception("not available")
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            path, suffix = dl.download_latest_span_file(
+                date=datetime(2025, 8, 8),
+                segment=seg,
+                data_dir=tmp_path,
+                use_first=False,
+            )
+
+        assert suffix == "s"
+        assert called[0].endswith("nsccl.20250808.s.zip")
+
+    def test_mcx_use_first_targets_0106_01(self, tmp_path):
+        seg = get_segment("MCX")
+        zip_bytes = _make_zip(b"<spanFile/>", "mcxrpf-20260608-0106-01-i.spn")
+        called = []
+
+        def fake_urlopen(req, timeout=None):
+            called.append(req.full_url)
+            if "0106-01" in req.full_url:
+                return _FakeHTTPResponse(zip_bytes)
+            raise Exception("not available")
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            path, suffix = dl.download_latest_span_file(
+                date=datetime(2026, 6, 8),
+                segment=seg,
+                data_dir=tmp_path,
+                use_first=True,
+            )
+
+        assert suffix == "0106-01"
+        assert path is not None
+        assert len(called) == 1
+
+    def test_explicit_suffixes_override_use_first(self, tmp_path):
+        """Explicit suffixes= takes precedence over use_first."""
+        seg = get_segment("NFO")
+        zip_bytes = _make_zip(b"<spanFile/>", "nsccl.20250808.i3.spn")
+
+        def fake_urlopen(req, timeout=None):
+            if "i3.zip" in req.full_url:
+                return _FakeHTTPResponse(zip_bytes)
+            raise Exception("not available")
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            path, suffix = dl.download_latest_span_file(
+                date=datetime(2025, 8, 8),
+                segment=seg,
+                data_dir=tmp_path,
+                suffixes=("i3",),     # explicit override
+                use_first=True,       # would normally give ("i1",) but overridden
+            )
+
+        assert suffix == "i3"
+
+
+# ---------------------------------------------------------------------------
+# find_local_span_file with use_first
+# ---------------------------------------------------------------------------
+
+
+class TestFindLocalSpanFileWithUseFirst:
+    def test_use_first_finds_earliest_suffix(self, tmp_path):
+        seg = get_segment("NFO")
+        # Put both 's' and 'i1' on disk
+        for sfx in ("s", "i1"):
+            zb = _make_zip(b"<spanFile/>", f"nsccl.20250808.{sfx}.spn")
+            (tmp_path / f"nsccl.20250808.{sfx}.zip").write_bytes(zb)
+
+        path, suffix = dl.find_local_span_file(
+            date=datetime(2025, 8, 8),
+            segment=seg,
+            data_dir=tmp_path,
+            use_first=True,
+        )
+
+        assert suffix == "i1"
+
+    def test_use_first_false_finds_newest_suffix(self, tmp_path):
+        seg = get_segment("NFO")
+        for sfx in ("s", "i1"):
+            zb = _make_zip(b"<spanFile/>", f"nsccl.20250808.{sfx}.spn")
+            (tmp_path / f"nsccl.20250808.{sfx}.zip").write_bytes(zb)
+
+        path, suffix = dl.find_local_span_file(
+            date=datetime(2025, 8, 8),
+            segment=seg,
+            data_dir=tmp_path,
+            use_first=False,
+        )
+
+        assert suffix == "s"
+
+    def test_use_first_returns_none_when_only_latest_present(self, tmp_path):
+        """If only 's' is on disk but use_first=True, return (None, None)."""
+        seg = get_segment("NFO")
+        zb = _make_zip(b"<spanFile/>", "nsccl.20250808.s.spn")
+        (tmp_path / "nsccl.20250808.s.zip").write_bytes(zb)
+
+        path, suffix = dl.find_local_span_file(
+            date=datetime(2025, 8, 8),
+            segment=seg,
+            data_dir=tmp_path,
+            use_first=True,
+        )
+
+        assert path is None
+        assert suffix is None
+
+
+# ---------------------------------------------------------------------------
+# get_span_file — high-level function
+# ---------------------------------------------------------------------------
+
+
+class TestGetSpanFile:
+    def test_returns_local_file_without_network(self, tmp_path):
+        seg = get_segment("NFO")
+        zb = _make_zip(b"<spanFile/>", "nsccl.20250808.s.spn")
+        (tmp_path / "nsccl.20250808.s.zip").write_bytes(zb)
+
+        # No network mock needed — local file should be found
+        path, suffix = dl.get_span_file(
+            date=datetime(2025, 8, 8), segment=seg, data_dir=tmp_path
+        )
+
+        assert path is not None
+        assert suffix == "s"
+
+    def test_downloads_when_not_local(self, tmp_path):
+        seg = get_segment("NFO")
+        zb = _make_zip(b"<spanFile/>", "nsccl.20250808.s.spn")
+
+        def fake_urlopen(req, timeout=None):
+            if req.full_url.endswith(".s.zip"):
+                return _FakeHTTPResponse(zb)
+            raise Exception("not available")
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            path, suffix = dl.get_span_file(
+                date=datetime(2025, 8, 8), segment=seg, data_dir=tmp_path
+            )
+
+        assert path is not None
+        assert suffix == "s"
+
+    def test_download_false_returns_none_when_not_local(self, tmp_path):
+        seg = get_segment("NFO")
+
+        path, suffix = dl.get_span_file(
+            date=datetime(2025, 8, 8),
+            segment=seg,
+            data_dir=tmp_path,
+            download=False,
+        )
+
+        assert path is None
+        assert suffix is None
+
+    def test_use_first_true_prefers_earliest_local_file(self, tmp_path):
+        seg = get_segment("NFO")
+        for sfx in ("s", "i1"):
+            zb = _make_zip(b"<spanFile/>", f"nsccl.20250808.{sfx}.spn")
+            (tmp_path / f"nsccl.20250808.{sfx}.zip").write_bytes(zb)
+
+        path, suffix = dl.get_span_file(
+            date=datetime(2025, 8, 8),
+            segment=seg,
+            data_dir=tmp_path,
+            use_first=True,
+        )
+
+        assert suffix == "i1"
+
+    def test_use_first_false_prefers_latest_local_file(self, tmp_path):
+        seg = get_segment("NFO")
+        for sfx in ("s", "i1"):
+            zb = _make_zip(b"<spanFile/>", f"nsccl.20250808.{sfx}.spn")
+            (tmp_path / f"nsccl.20250808.{sfx}.zip").write_bytes(zb)
+
+        path, suffix = dl.get_span_file(
+            date=datetime(2025, 8, 8),
+            segment=seg,
+            data_dir=tmp_path,
+            use_first=False,
+        )
+
+        assert suffix == "s"
+
+    def test_use_first_downloads_i1_when_not_local(self, tmp_path):
+        seg = get_segment("NFO")
+        zb = _make_zip(b"<spanFile/>", "nsccl.20250808.i01.spn")
+        called = []
+
+        def fake_urlopen(req, timeout=None):
+            called.append(req.full_url)
+            if "i1.zip" in req.full_url:
+                return _FakeHTTPResponse(zb)
+            raise Exception("not available")
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            path, suffix = dl.get_span_file(
+                date=datetime(2025, 8, 8),
+                segment=seg,
+                data_dir=tmp_path,
+                use_first=True,
+            )
+
+        assert suffix == "i1"
+        assert len(called) == 1, "Only the first-of-day suffix should be tried"
+        assert "i1.zip" in called[0]
+
+    def test_mcx_use_first_gets_first_rpf(self, tmp_path):
+        seg = get_segment("MCX")
+        zb = _make_zip(b"<spanFile/>", "mcxrpf-20260608-0106-01-i.spn")
+
+        def fake_urlopen(req, timeout=None):
+            if "0106-01" in req.full_url:
+                return _FakeHTTPResponse(zb)
+            raise Exception("not available")
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            path, suffix = dl.get_span_file(
+                date=datetime(2026, 6, 8),
+                segment=seg,
+                data_dir=tmp_path,
+                use_first=True,
+            )
+
+        assert suffix == "0106-01"
+        assert path is not None
+
+    def test_bfo_use_first_gets_base_snapshot(self, tmp_path):
+        seg = get_segment("BFO")
+        zb = _make_zip(b"<spanFile/>", "BSERISK20250808-00.spn")
+
+        def fake_urlopen(req, timeout=None):
+            if "BSERISK20250808-00" in req.full_url:
+                return _FakeHTTPResponse(zb)
+            raise Exception("not available")
+
+        with patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            path, suffix = dl.get_span_file(
+                date=datetime(2025, 8, 8),
+                segment=seg,
+                data_dir=tmp_path,
+                use_first=True,
+            )
+
+        assert suffix == "00"

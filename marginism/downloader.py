@@ -5,13 +5,21 @@ Uses only the Python standard library (``urllib.request``, ``zipfile``,
 
 Quick start
 -----------
-Download the latest NSE NFO SPAN file::
+Download the **latest** NSE NFO SPAN file (settlement or newest intraday)::
 
     from marginism.downloader import download_latest_span_file
     from marginism.segments import get_segment
 
     spn_path, suffix = download_latest_span_file(segment=get_segment("NFO"))
     print(spn_path)   # /path/to/nsccl.YYYYMMDD.s.spn
+
+Download the **first** (start-of-day) snapshot — pins margins to open-of-day
+risk parameters, matching typical broker displays::
+
+    from marginism.downloader import get_span_file
+
+    spn_path, suffix = get_span_file(use_first=True)   # NFO i1 / BFO 00 / MCX 0106-01
+    spn_path, suffix = get_span_file(use_first=False)  # latest available (default)
 
 Download a specific BSE BFO snapshot::
 
@@ -25,6 +33,23 @@ Download MCX daily margin table::
 
 By default files are saved to ``~/.marginism/data/``.  Pass *data_dir* to
 override the destination directory.
+
+First vs latest SPAN
+--------------------
+Exchanges publish multiple intraday snapshots every trading day:
+
+* NSE publishes six: ``i1`` (≈10:00 IST) through ``i5`` (≈15:30 IST) plus
+  ``s`` (settlement, ≈18:00 IST).  ``s`` is "latest"; ``i1`` is "first".
+* BSE BFO publishes five: ``00`` (base) plus ``01``..``04`` intraday.
+* MCX publishes ten: ``0106-01`` (≈01:06) through ``2329-10`` (≈23:29).
+
+**use_first=True** (``_suffixes_for_mode`` returns ``(segment.suffixes[-1],)``)
+  Restricts the search to the earliest snapshot of the day.  Useful when you
+  want stable, start-of-day margin parameters that do not change intraday —
+  this matches the default broker order-margin display for NSE/MCX.
+
+**use_first=False** (default)
+  Returns the most recent snapshot available, scanning newest → oldest.
 """
 
 from __future__ import annotations
@@ -134,6 +159,35 @@ _USER_AGENT: str = (
 def _ensure_dir(path: Path) -> Path:
     path.mkdir(parents=True, exist_ok=True)
     return path
+
+
+def _suffixes_for_mode(
+    segment: SpanSegment, use_first: bool
+) -> Tuple[str, ...]:
+    """Return the suffix tuple appropriate for the requested SPAN mode.
+
+    Parameters
+    ----------
+    segment:
+        The exchange segment whose ``suffixes`` are used.
+    use_first:
+        * ``True``  — return only ``(segment.suffixes[-1],)``, i.e. the
+          earliest (first-of-day) snapshot.  For NSE this is ``("i1",)``,
+          for MCX ``("0106-01",)``, for BFO ``("00",)``.
+        * ``False`` — return all ``segment.suffixes`` in newest-first order
+          (standard "latest available" behaviour).
+
+    Examples
+    --------
+    >>> from marginism.segments import get_segment
+    >>> _suffixes_for_mode(get_segment("NFO"), use_first=True)
+    ('i1',)
+    >>> _suffixes_for_mode(get_segment("NFO"), use_first=False)
+    ('s', 'i5', 'i4', 'i3', 'i2', 'i1')
+    """
+    if use_first and len(segment.suffixes) > 1:
+        return (segment.suffixes[-1],)
+    return segment.suffixes
 
 
 def download_file(
@@ -274,15 +328,25 @@ def download_latest_span_file(
     suffixes: Optional[Tuple[str, ...]] = None,
     segment: SpanSegment = DEFAULT_SEGMENT,
     data_dir: Optional[Path] = None,
+    use_first: bool = False,
 ) -> Tuple[Optional[Path], Optional[str]]:
     """Download the most recent SPAN snapshot available for *date* and *segment*.
 
     Tries suffixes newest → oldest (per ``segment.suffixes`` order). Returns
     ``(spn_path, suffix)`` on success, or ``(None, None)`` if nothing is
     available.
+
+    Parameters
+    ----------
+    use_first:
+        When ``True``, restrict the download to the earliest snapshot of the
+        day (``segment.suffixes[-1]``).  This pins margins to start-of-day
+        risk parameters — for NSE that is ``i1``, BFO ``00``, MCX ``0106-01``.
+        When ``False`` (default), the newest available snapshot is downloaded.
+        Ignored when *suffixes* is provided explicitly.
     """
     if suffixes is None:
-        suffixes = segment.suffixes
+        suffixes = _suffixes_for_mode(segment, use_first)
     for suffix in suffixes:
         path = download_span_file(
             suffix=suffix,
@@ -307,17 +371,26 @@ def find_local_span_file(
     suffixes: Optional[Tuple[str, ...]] = None,
     segment: SpanSegment = DEFAULT_SEGMENT,
     data_dir: Optional[Path] = None,
+    use_first: bool = False,
 ) -> Tuple[Optional[Path], Optional[str]]:
-    """Return the newest matching local SPAN payload already present on disk.
+    """Return the best matching local SPAN payload already present on disk.
 
     Scans *data_dir* for ZIP archives matching *segment*'s template,
     extracts the best candidate, and returns ``(spn_path, suffix)``.
     Returns ``(None, None)`` if nothing matches.
+
+    Parameters
+    ----------
+    use_first:
+        When ``True``, look only for the earliest snapshot of the day
+        (``segment.suffixes[-1]``).  When ``False`` (default), the newest
+        locally available snapshot is returned.
+        Ignored when *suffixes* is provided explicitly.
     """
     if data_dir is None:
         data_dir = DEFAULT_DATA_DIR
     if suffixes is None:
-        suffixes = segment.suffixes
+        suffixes = _suffixes_for_mode(segment, use_first)
 
     suffix_order = {s: i for i, s in enumerate(suffixes)}
     escaped = re.escape(segment.span_zip_template)
@@ -349,6 +422,87 @@ def find_local_span_file(
         if spn_path is not None:
             return spn_path, suffix
     return None, None
+
+
+def get_span_file(
+    date: Optional[datetime] = None,
+    segment: SpanSegment = DEFAULT_SEGMENT,
+    data_dir: Optional[Path] = None,
+    use_first: bool = False,
+    download: bool = True,
+) -> Tuple[Optional[Path], Optional[str]]:
+    """Get the SPAN file for *date*, honouring the first/latest *mode*.
+
+    This is the preferred high-level entry point.  It checks local disk first
+    and only hits the network when a matching file is not already present.
+
+    Parameters
+    ----------
+    date:
+        Trading date to fetch.  Defaults to today.
+    segment:
+        Exchange segment.  Defaults to NSE NFO.
+    data_dir:
+        Directory to scan for local files and to save new downloads.
+        Defaults to ``~/.marginism/data``.
+    use_first:
+        * ``True``  — use/download the **first** (start-of-day) snapshot.
+          For NSE this is ``i1`` (≈10:00 IST), for MCX ``0106-01`` (≈01:06),
+          for BFO ``00`` (base snapshot).  Margins stay stable across the day.
+        * ``False`` — use/download the **latest** available snapshot
+          (settlement > intraday, newest first).  Default.
+    download:
+        When ``True`` (default), download from the exchange archive if no
+        local file matches.  Set to ``False`` to restrict to disk-only lookup.
+
+    Returns
+    -------
+    ``(spn_path, suffix)`` on success, or ``(None, None)`` if unavailable.
+
+    Examples
+    --------
+    >>> # Latest settlement or intraday snapshot (default)
+    >>> spn, sfx = get_span_file()
+    >>> print(sfx)  # e.g. 's'
+
+    >>> # First snapshot of the day — stable start-of-day margins
+    >>> spn, sfx = get_span_file(use_first=True)
+    >>> print(sfx)  # 'i1' for NFO, '0106-01' for MCX, '00' for BFO
+
+    >>> # BFO latest
+    >>> from marginism.segments import get_segment
+    >>> spn, sfx = get_span_file(segment=get_segment("BFO"))
+
+    >>> # MCX first snapshot, no network
+    >>> spn, sfx = get_span_file(segment=get_segment("MCX"),
+    ...                          use_first=True, download=False)
+    """
+    # 1. Try local disk first.
+    spn_path, suffix = find_local_span_file(
+        date=date, segment=segment, data_dir=data_dir, use_first=use_first
+    )
+    if spn_path is not None:
+        logger.info(
+            "Using local %s SPAN file (use_first=%s, suffix=%s): %s",
+            segment.code, use_first, suffix, spn_path.name,
+        )
+        return spn_path, suffix
+
+    # 2. Optionally download.
+    if not download:
+        logger.info(
+            "No local %s SPAN file found (use_first=%s); download=False",
+            segment.code, use_first,
+        )
+        return None, None
+
+    logger.info(
+        "No local %s SPAN file; downloading (use_first=%s)…",
+        segment.code, use_first,
+    )
+    return download_latest_span_file(
+        date=date, segment=segment, data_dir=data_dir, use_first=use_first
+    )
 
 
 # ---------------------------------------------------------------------------

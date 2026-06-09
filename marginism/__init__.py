@@ -53,6 +53,8 @@ from .downloader import (
     find_local_span_file,
     find_local_exposure_file,
     find_local_mcx_daily_margin_file,
+    get_span_file,
+    _suffixes_for_mode,
 )
 
 __version__ = "0.2.0"
@@ -101,5 +103,6 @@ __all__ = [
     "find_local_span_file",
     "find_local_exposure_file",
     "find_local_mcx_daily_margin_file",
+    "get_span_file",
     "__version__",
 ]
