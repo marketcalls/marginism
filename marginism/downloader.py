@@ -18,8 +18,8 @@ risk parameters, matching typical broker displays::
 
     from marginism.downloader import get_span_file
 
-    spn_path, suffix = get_span_file(use_first=True)   # NFO i1 / BFO 00 / MCX 0106-01
-    spn_path, suffix = get_span_file(use_first=False)  # latest available (default)
+    spn_path, suffix = get_span_file()                 # NFO i1 / BFO 00 / MCX 0106-01
+    spn_path, suffix = get_span_file(use_first=False)  # latest available
 
 Download a specific BSE BFO snapshot::
 
@@ -48,8 +48,9 @@ Exchanges publish multiple intraday snapshots every trading day:
   want stable, start-of-day margin parameters that do not change intraday —
   this matches the default broker order-margin display for NSE/MCX.
 
-**use_first=False** (default)
-  Returns the most recent snapshot available, scanning newest → oldest.
+High-level ``get_span_file()`` defaults to ``use_first=True``.
+The lower-level ``download_latest_span_file()`` and ``find_local_span_file()``
+helpers still default to the newest snapshot when ``use_first=False``.
 """
 
 from __future__ import annotations
@@ -389,6 +390,8 @@ def find_local_span_file(
     """
     if data_dir is None:
         data_dir = DEFAULT_DATA_DIR
+    if date is None:
+        date = datetime.now()
     if suffixes is None:
         suffixes = _suffixes_for_mode(segment, use_first)
 
@@ -413,7 +416,7 @@ def find_local_span_file(
         suffix = m.group("suffix")
         if suffix not in suffix_order:
             continue
-        if date is not None and date_token != date.strftime("%Y%m%d"):
+        if date_token != date.strftime("%Y%m%d"):
             continue
         candidates.append((date_token, -suffix_order[suffix], zip_path, suffix))
 
@@ -428,7 +431,7 @@ def get_span_file(
     date: Optional[datetime] = None,
     segment: SpanSegment = DEFAULT_SEGMENT,
     data_dir: Optional[Path] = None,
-    use_first: bool = False,
+    use_first: bool = True,
     download: bool = True,
 ) -> Tuple[Optional[Path], Optional[str]]:
     """Get the SPAN file for *date*, honouring the first/latest *mode*.
@@ -449,8 +452,9 @@ def get_span_file(
         * ``True``  — use/download the **first** (start-of-day) snapshot.
           For NSE this is ``i1`` (≈10:00 IST), for MCX ``0106-01`` (≈01:06),
           for BFO ``00`` (base snapshot).  Margins stay stable across the day.
+          Default.
         * ``False`` — use/download the **latest** available snapshot
-          (settlement > intraday, newest first).  Default.
+          (settlement > intraday, newest first).
     download:
         When ``True`` (default), download from the exchange archive if no
         local file matches.  Set to ``False`` to restrict to disk-only lookup.
@@ -461,13 +465,12 @@ def get_span_file(
 
     Examples
     --------
-    >>> # Latest settlement or intraday snapshot (default)
+    >>> # First snapshot of the day — stable start-of-day margins (default)
     >>> spn, sfx = get_span_file()
-    >>> print(sfx)  # e.g. 's'
-
-    >>> # First snapshot of the day — stable start-of-day margins
-    >>> spn, sfx = get_span_file(use_first=True)
     >>> print(sfx)  # 'i1' for NFO, '0106-01' for MCX, '00' for BFO
+
+    >>> # Latest settlement or intraday snapshot
+    >>> spn, sfx = get_span_file(use_first=False)
 
     >>> # BFO latest
     >>> from marginism.segments import get_segment

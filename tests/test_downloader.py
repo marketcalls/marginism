@@ -714,8 +714,8 @@ class TestFindLocalSpanFileWithUseFirst:
 class TestGetSpanFile:
     def test_returns_local_file_without_network(self, tmp_path):
         seg = get_segment("NFO")
-        zb = _make_zip(b"<spanFile/>", "nsccl.20250808.s.spn")
-        (tmp_path / "nsccl.20250808.s.zip").write_bytes(zb)
+        zb = _make_zip(b"<spanFile/>", "nsccl.20250808.i1.spn")
+        (tmp_path / "nsccl.20250808.i1.zip").write_bytes(zb)
 
         # No network mock needed — local file should be found
         path, suffix = dl.get_span_file(
@@ -723,14 +723,14 @@ class TestGetSpanFile:
         )
 
         assert path is not None
-        assert suffix == "s"
+        assert suffix == "i1"
 
     def test_downloads_when_not_local(self, tmp_path):
         seg = get_segment("NFO")
-        zb = _make_zip(b"<spanFile/>", "nsccl.20250808.s.spn")
+        zb = _make_zip(b"<spanFile/>", "nsccl.20250808.i1.spn")
 
         def fake_urlopen(req, timeout=None):
-            if req.full_url.endswith(".s.zip"):
+            if req.full_url.endswith(".i1.zip"):
                 return _FakeHTTPResponse(zb)
             raise Exception("not available")
 
@@ -740,7 +740,7 @@ class TestGetSpanFile:
             )
 
         assert path is not None
-        assert suffix == "s"
+        assert suffix == "i1"
 
     def test_download_false_returns_none_when_not_local(self, tmp_path):
         seg = get_segment("NFO")
@@ -754,6 +754,27 @@ class TestGetSpanFile:
 
         assert path is None
         assert suffix is None
+
+    def test_missing_today_local_file_does_not_fall_back_to_yesterday(
+        self, tmp_path
+    ):
+        seg = get_segment("NFO")
+        yesterday = "20250808"
+        today = "20250809"
+        zb = _make_zip(b"<spanFile/>", f"nsccl.{yesterday}.i1.spn")
+        (tmp_path / f"nsccl.{yesterday}.i1.zip").write_bytes(zb)
+
+        with patch("marginism.downloader.datetime") as mock_datetime:
+            mock_datetime.now.return_value = datetime(2025, 8, 9)
+            path, suffix = dl.get_span_file(
+                segment=seg,
+                data_dir=tmp_path,
+                download=False,
+            )
+
+        assert path is None
+        assert suffix is None
+        assert not (tmp_path / f"nsccl.{today}.i1.zip").exists()
 
     def test_use_first_true_prefers_earliest_local_file(self, tmp_path):
         seg = get_segment("NFO")
